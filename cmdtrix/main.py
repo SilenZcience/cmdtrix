@@ -14,15 +14,17 @@ colorCodes = {"black": "30", "red": "31", "green": "32", "yellow": "33",
               "blue": "34", "magenta": "35", "cyan": "36", "white": "37"}
 cols, rows = get_terminal_size()
 
-FRAME_DELAY = 0.02
+FRAME_DELAY = 0.015
 
 MINIMUM_LINE_LENGTH = 10
 MAXIMUM_LINE_LENGTH = rows
-NUMBER_OF_MATRIXCOLUMNS = 600
+NUMBER_OF_MATRIXCOLUMNS = cols
 MAX_SPEED_TICKS = 5
 COLOR = "green"
-EASTER_EGG_MESSAGE = "MadeBySilasKraume"
 
+EASTER_EGG_MESSAGE = b'\x4d\x61\x64\x65\x42\x79\x53\x69\x6c\x61\x73\x4b\x72\x61\x75\x6d\x65'.decode()
+
+SYNCHRONOUS = False
 CHANCE_FOR_DIM = 0.0
 CHANCE_FOR_ITALIC = 0.0
 
@@ -32,9 +34,10 @@ coloramaInit()
 class MatrixColumn:
     col = None
     finished = False
-    currentTick = -1
+    currentTick = 0
     speedTicks = None
-
+    speedTickCap = None
+    
     lineLength = 0
     maxYPosition = 0
     yPositionSet = 1
@@ -46,17 +49,18 @@ class MatrixColumn:
 
     def __init__(self, col):
         self.col = col
-        self.speedTicks = randrange(0, MAX_SPEED_TICKS)
-
+        self.speedTicks = randrange(1, MAX_SPEED_TICKS + 1)
+        self.speedTickCap = (MAX_SPEED_TICKS if SYNCHRONOUS else self.speedTicks)
+        
         self.lineLength = randrange(MINIMUM_LINE_LENGTH, MAXIMUM_LINE_LENGTH+1)
         self.maxYPosition = min(rows, randrange(2*rows))
 
-        self.easter_egg = (random() < 0.01) and (self.maxYPosition > len(EASTER_EGG_MESSAGE) + 1)
+        self.easter_egg = (random() < 0.9) and (self.maxYPosition > len(EASTER_EGG_MESSAGE) + 1)
         if self.easter_egg:
             self.easter_egg_gen = getNextChar(self.maxYPosition - len(EASTER_EGG_MESSAGE) - 1)
 
     def update(self):
-        self.currentTick = (self.currentTick + 1) % MAX_SPEED_TICKS
+        self.currentTick = (self.currentTick % self.speedTickCap + 1)
         
         if self.currentTick == self.speedTicks:
             if self.yPositionSet <= self.maxYPosition:
@@ -75,8 +79,7 @@ class MatrixColumn:
             if self.yPositionSet > self.lineLength:
                 printAtPosition(" ", self.col, self.yPositionErased, "black")
                 self.yPositionErased += 1
-            if self.yPositionErased > self.maxYPosition:
-                self.finished = True
+            self.finished = (self.yPositionErased > self.maxYPosition)
 
             self.yPositionSet += 1
         elif self.yPositionSet <= self.maxYPosition:
@@ -85,10 +88,7 @@ class MatrixColumn:
 
         
 def getNextChar(xSpace):
-    for r in choices(charList, k=randrange(1, xSpace+1)):
-        yield r
-    for i in EASTER_EGG_MESSAGE:
-        yield i
+    yield from choices(charList, k=randrange(1, xSpace+1)) + list(EASTER_EGG_MESSAGE)
     while True:
         yield choice(charList)
 
@@ -98,11 +98,10 @@ def printCode(code):
 
 
 def printAtPosition(text, x, y, color):
-    printCode("%d;%df" % (y, x))
-    printCode(colorCodes[color] + "m")
+    printCode("%d;%df" % (y, x))  # set row and col position
+    printCode(colorCodes[color] + "m")  # set color
     print(text, end="", flush=True)
-    printCode("22m")
-    printCode("23m")
+    printCode("m") # reset attributes
 
 
 def checkTerminalSize():
@@ -113,11 +112,13 @@ def checkTerminalSize():
         rows = rowsNew
         global MAXIMUM_LINE_LENGTH
         MAXIMUM_LINE_LENGTH = rows
+        global NUMBER_OF_MATRIXCOLUMNS
+        NUMBER_OF_MATRIXCOLUMNS = cols
         printCode("2J")  # clear screen
 
 
 def addNewMatrixColumns(matrixColumns):
-    if len(matrixColumns) >= NUMBER_OF_MATRIXCOLUMNS or random() > 0.5:
+    if len(matrixColumns) >= NUMBER_OF_MATRIXCOLUMNS:
         return
     col = randrange(cols+1)
     matrixColumns.add(MatrixColumn(col))
@@ -163,6 +164,8 @@ def main():
         CHANCE_FOR_DIM = argsHandler.getDim()
         global CHANCE_FOR_ITALIC
         CHANCE_FOR_ITALIC = argsHandler.getItalic()
+        global SYNCHRONOUS
+        SYNCHRONOUS = argsHandler.getSynchronous()
         exitOnArg = False
         
         repeatedTimer = init()

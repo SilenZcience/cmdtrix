@@ -78,13 +78,25 @@ It is neccessary that a font is installed, which supports the unicode characters
 ```console
 pip install cmdtrix
 ```
+or
+```console
+pip install git+https://github.com/SilenZcience/cmdtrix.git
+```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Usage
 
 ```console
-cmdtrix [-h] [-c COLOR]
+cmdtrix [-h] [-c COLOR] ...
 ```
+
+| Argument               | Description                                       |
+|------------------------|---------------------------------------------------|
+| -v, --version          | number all output lines                           |
+| -s, --synchronous      | sync the matrix columns speed                     |
+| -c [\*], --color [\*]  | set the color to *                                |
+| -d x%, --dim x%        | add chance for dim characters                     |
+| -i x%, --italic x%     | add chance for italic characters                  |
 
 ### Examples
 

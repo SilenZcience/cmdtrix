@@ -13,6 +13,8 @@ class ArgsHandler:
     color = "green"
     dim = 0.0
     italic = 0.0
+    synchronous = False
+    
     def __init__(self, file):
         self.file = file
         self.workingDir = path.dirname(path.realpath(self.file))
@@ -31,13 +33,18 @@ class ArgsHandler:
     def getItalic(self):
         return self.italic
     
+    def getSynchronous(self):
+        return self.synchronous
+    
     def parseArgs(self):
         parser = argparse.ArgumentParser()
         parser.add_argument("-v", "--version", action="store_const", default=False,
                             const=True, dest="version", help="show program's version number and exit")
+        parser.add_argument("-s", "--synchronous", action="store_const", default=False,
+                            const=True, dest="synchronous", help="sync the matrix columns speed")
         parser.add_argument("-c", "--color", action="store", default="green",
                         choices=["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"], 
-                        dest="color", metavar="[*]", help="set the color")
+                        dest="color", metavar="[*]", help="set the color to *")
         parser.add_argument("-d", "--dim", action="store", default=1.0,
                             type=float, dest="dim", metavar="x%",
                             help="add chance for dim characters")
@@ -59,6 +66,7 @@ class ArgsHandler:
         if not 0.0 <= self.italic <= 1.0:
             print("The italic chance has to be between 0 and 100!")
             sysexit(1)
+        self.synchronous = getattr(self.params, "synchronous")
         
     def _showVersion(self):
         print()

@@ -28,7 +28,7 @@ dynamic = [
 ]
 
 [project.scripts]
-cat = "cmdtrix.main:main"
+cmdtrix = "cmdtrix.main:main"
 
 [project.urls]
 Github = "https://github.com/SilenZcience/cmdtrix"

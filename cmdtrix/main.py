@@ -1,5 +1,5 @@
 
-from os import get_terminal_size, system
+from os import get_terminal_size, system, name as osname
 from colorama import init as coloramaInit
 from random import choice, choices, randrange, random
 from time import sleep as delay_frame
@@ -172,8 +172,7 @@ def main():
     finally:
         if not exitOnArg:
             deinit(repeatedTimer)
-            if system('clear') > 0:
-                system('cls')
+            system('cls' if osname == 'nt' else 'clear')
 
 
 

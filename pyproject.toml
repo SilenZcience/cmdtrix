@@ -1,0 +1,36 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "cmdtrix"
+requires-python = ">=3.7"
+authors = [{name = "Silas A. Kraume", email = "silas.kraume1552@gmail.com"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = [
+    "python",
+    "matrix",
+    "console"
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Environment :: Console",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+    "colorama>=0.4.5"
+]
+dynamic = [
+    "version",
+    "description"
+]
+
+[project.scripts]
+cat = "cmdtrix.main:main"
+
+[project.urls]
+Github = "https://github.com/SilenZcience/cmdtrix"
+Download = "https://github.com/SilenZcience/cmdtrix/tarball/master"
+Tracker = "https://github.com/SilenZcience/cmdtrix/issues"

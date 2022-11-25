@@ -14,7 +14,7 @@ colorCodes = {"black": "30", "red": "31", "green": "32", "yellow": "33",
               "blue": "34", "magenta": "35", "cyan": "36", "white": "37"}
 cols, rows = get_terminal_size()
 
-FRAME_DELAY = 0.015
+FRAME_DELAY = 0.02
 
 MINIMUM_LINE_LENGTH = 10
 MAXIMUM_LINE_LENGTH = rows
@@ -23,13 +23,16 @@ MAX_SPEED_TICKS = 5
 COLOR = "green"
 EASTER_EGG_MESSAGE = "MadeBySilasKraume"
 
+CHANCE_FOR_DIM = 0.0
+CHANCE_FOR_ITALIC = 0.0
+
 coloramaInit()
 
 
 class MatrixColumn:
     col = None
     finished = False
-    currentTick = 0
+    currentTick = -1
     speedTicks = None
 
     lineLength = 0
@@ -40,32 +43,35 @@ class MatrixColumn:
 
     easter_egg = False
     easter_egg_gen = None
-    
+
     def __init__(self, col):
         self.col = col
-        self.speedTicks = randrange(1, MAX_SPEED_TICKS+1)
+        self.speedTicks = randrange(0, MAX_SPEED_TICKS)
 
         self.lineLength = randrange(MINIMUM_LINE_LENGTH, MAXIMUM_LINE_LENGTH+1)
         self.maxYPosition = min(rows, randrange(2*rows))
-        
-        self.easter_egg = (random() < 0.01) and (self.maxYPosition > len(EASTER_EGG_MESSAGE)+1)
+
+        self.easter_egg = (random() < 0.01) and (self.maxYPosition > len(EASTER_EGG_MESSAGE) + 1)
         if self.easter_egg:
             self.easter_egg_gen = getNextChar(self.maxYPosition - len(EASTER_EGG_MESSAGE) - 1)
 
-    def isFinished(self):
-        return self.finished
-
     def update(self):
+        self.currentTick = (self.currentTick + 1) % MAX_SPEED_TICKS
+        
         if self.currentTick == self.speedTicks:
             if self.yPositionSet <= self.maxYPosition:
                 if self.easter_egg:
                     self.lastChar = next(self.easter_egg_gen)
+                if random() < CHANCE_FOR_DIM:
+                    printCode("2m")
+                if random() < CHANCE_FOR_ITALIC:
+                    printCode("3m")               
                 printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR)
                 newChar = choice(charList)
                 printAtPosition(newChar, self.col, self.yPositionSet, "white")
                 self.lastChar = newChar
-            if self.yPositionSet == self.maxYPosition + 1 and self.maxYPosition >= rows:
-                printAtPosition(self.lastChar, self.col,  self.yPositionSet-1, COLOR)
+            elif self.yPositionSet == self.maxYPosition + 1 and self.maxYPosition >= rows:
+                printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR)
             if self.yPositionSet > self.lineLength:
                 printAtPosition(" ", self.col, self.yPositionErased, "black")
                 self.yPositionErased += 1
@@ -74,15 +80,10 @@ class MatrixColumn:
 
             self.yPositionSet += 1
         elif self.yPositionSet <= self.maxYPosition:
-            newChar = choice(charList)
-            printAtPosition(newChar, self.col, self.yPositionSet-1, "white")
-            self.lastChar = newChar
+            self.lastChar = choice(charList)
+            printAtPosition(self.lastChar, self.col, self.yPositionSet-1, "white")
 
-        self.currentTick += 1
-        if self.currentTick > MAX_SPEED_TICKS:
-            self.currentTick = 0
-
-
+        
 def getNextChar(xSpace):
     for r in choices(charList, k=randrange(1, xSpace+1)):
         yield r
@@ -90,6 +91,7 @@ def getNextChar(xSpace):
         yield i
     while True:
         yield choice(charList)
+
 
 def printCode(code):
     print("\x1b[", code, sep="", end="")
@@ -99,6 +101,8 @@ def printAtPosition(text, x, y, color):
     printCode("%d;%df" % (y, x))
     printCode(colorCodes[color] + "m")
     print(text, end="", flush=True)
+    printCode("22m")
+    printCode("23m")
 
 
 def checkTerminalSize():
@@ -113,9 +117,7 @@ def checkTerminalSize():
 
 
 def addNewMatrixColumns(matrixColumns):
-    if len(matrixColumns) >= NUMBER_OF_MATRIXCOLUMNS:
-        return
-    if random() > 0.5:
+    if len(matrixColumns) >= NUMBER_OF_MATRIXCOLUMNS or random() > 0.5:
         return
     col = randrange(cols+1)
     matrixColumns.add(MatrixColumn(col))
@@ -129,7 +131,7 @@ def updateMatrixColumns(matrixColumns):
 def getFinishedColumns(matrixColumns):
     finishedColumns = set()
     for matrixColumn in matrixColumns:
-        if matrixColumn.isFinished():
+        if matrixColumn.finished:
             finishedColumns.add(matrixColumn)
 
     return finishedColumns
@@ -157,8 +159,12 @@ def main():
         argsHandler = ArgsHandler(__file__)
         global COLOR
         COLOR = argsHandler.getColor()
-        
+        global CHANCE_FOR_DIM
+        CHANCE_FOR_DIM = argsHandler.getDim()
+        global CHANCE_FOR_ITALIC
+        CHANCE_FOR_ITALIC = argsHandler.getItalic()
         exitOnArg = False
+        
         repeatedTimer = init()
         matrixColumns = set()
         while True:
@@ -173,7 +179,6 @@ def main():
         if not exitOnArg:
             deinit(repeatedTimer)
             system('cls' if osname == 'nt' else 'clear')
-
 
 
 if __name__ == '__main__':

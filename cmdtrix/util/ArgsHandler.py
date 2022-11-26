@@ -46,6 +46,7 @@ class ArgsHandler:
     italic = 0.0
     synchronous = False
     message = [(b'\x4d\x61\x64\x65\x42\x79\x53\x69\x6c\x61\x73\x4b\x72\x61\x75\x6d\x65'.decode(), 0.01)]
+    frameDelay = 0.015
     
     def __init__(self, file):
         self.file = file
@@ -71,6 +72,9 @@ class ArgsHandler:
     def getMessage(self):
         return self.message
     
+    def getFrameDelay(self):
+        return self.frameDelay
+    
     def parseArgs(self):
         parser = argparse.ArgumentParser()
         parser.add_argument("-v", "--version", action="store_const", default=False,
@@ -88,6 +92,9 @@ class ArgsHandler:
                             help="add chance for italic characters")
         parser.add_argument("-m", action=string_integer(0.01), dest="message",
                             nargs="+", metavar="* x%", help="hide a custom message within the Matrix")
+        parser.add_argument("--framedelay", action="store", default=0.015, type=float,
+                            dest="framedelay", metavar="DELAY", help="set the framedelay (in sec) to slow down the Matrix, default is 0.015")
+        
         
         self.params = parser.parse_args()
     
@@ -111,6 +118,11 @@ class ArgsHandler:
         
         if getattr(self.params, "message"):
             self.message += [getattr(self.params, "message")]
+            
+        self.frameDelay = getattr(self.params, "framedelay")
+        if self.frameDelay < 0.0:
+            print("A negative framedelay cannot be implemented!")
+            sysexit(1)
 
         
     def _showVersion(self):

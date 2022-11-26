@@ -171,6 +171,8 @@ def main():
         SYNCHRONOUS = argsHandler.getSynchronous()
         global HIDDEN_MESSAGE
         HIDDEN_MESSAGE = argsHandler.getMessage()
+        global FRAME_DELAY
+        FRAME_DELAY = argsHandler.getFrameDelay()
         exitOnArg = False
         
         repeatedTimer = init()

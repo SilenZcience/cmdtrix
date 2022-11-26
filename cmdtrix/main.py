@@ -4,8 +4,9 @@ from colorama import init as coloramaInit
 from random import choice, choices, randrange, random
 from time import sleep as delay_frame
 from sys import stdout
+from _thread import interrupt_main
 
-from cmdtrix.util.RepeatedTimer import RepeatedTimer
+from cmdtrix.util.RepeatedTimer import EventTimer
 from cmdtrix.util.Chars import charList
 from cmdtrix.util.ArgsHandler import ArgsHandler
 
@@ -90,24 +91,24 @@ class MatrixColumn:
             printAtPosition(self.lastChar, self.col, self.yPositionSet-1, "white")
 
         
-def getNextChar(hMessage, xSpace):
+def getNextChar(hMessage: str, xSpace: int) -> str:
     yield from choices(charList, k=randrange(1, xSpace+1)) + list(hMessage)
     while True:
         yield choice(charList)
 
 
-def printCode(code):
+def printCode(code: str) -> None:
     print("\x1b[", code, sep="", end="")
 
 
-def printAtPosition(text, x, y, color):
+def printAtPosition(text: str, x: int, y: int, color: str) -> None:
     printCode("%d;%df" % (y, x))  # set row and col position
     printCode(colorCodes[color] + "m")  # set color
     print(text, end="", flush=True)
     printCode("m") # reset attributes
 
 
-def checkTerminalSize():
+def checkTerminalSize() -> None:
     global cols, rows
     colsNew, rowsNew = get_terminal_size()
     if cols != colsNew or rows != rowsNew:
@@ -120,19 +121,23 @@ def checkTerminalSize():
         printCode("2J")  # clear screen
 
 
-def addNewMatrixColumns(matrixColumns):
+def addNewMatrixColumns(matrixColumns: set[MatrixColumn]) -> None:
+    """
+    add a new MatrixColumn every Tick, if the MAX has not been
+    reached yet
+    """
     if len(matrixColumns) >= NUMBER_OF_MATRIXCOLUMNS:
         return
     col = randrange(cols+1)
     matrixColumns.add(MatrixColumn(col))
 
 
-def updateMatrixColumns(matrixColumns):
+def updateMatrixColumns(matrixColumns: set[MatrixColumn]) -> None:
     for matrixColumn in matrixColumns:
         matrixColumn.update()
 
 
-def getFinishedColumns(matrixColumns):
+def getFinishedColumns(matrixColumns: set[MatrixColumn]) -> set[MatrixColumn]:
     finishedColumns = set()
     for matrixColumn in matrixColumns:
         if matrixColumn.finished:
@@ -141,23 +146,22 @@ def getFinishedColumns(matrixColumns):
     return finishedColumns
 
 
-def init():
+def init() -> None:
     printCode("?25l")  # hide cursor
     printCode("2J")  # clear screen
-    return RepeatedTimer(10, checkTerminalSize)
+    return EventTimer(10, checkTerminalSize)
 
 
-def deinit(repeatedTimer: RepeatedTimer):
+def deinit(eventTimer: list[EventTimer]) -> None:
     printCode("m")  # reset attributes
     printCode("2J")  # clear screen
     printCode("?25h")  # show cursor
-    if repeatedTimer != None:
-        repeatedTimer.stop()
-    return
-
+    for timer in eventTimer:
+        if timer != None:
+            timer.cancel()
 
 def main():
-    repeatedTimer = None
+    repeatedTimer = []
     exitOnArg = True
     try:
         argsHandler = ArgsHandler(__file__)
@@ -175,7 +179,10 @@ def main():
         FRAME_DELAY = argsHandler.getFrameDelay()
         exitOnArg = False
         
-        repeatedTimer = init()
+        timer = argsHandler.getTimer()
+        if timer != None:
+            repeatedTimer.append(EventTimer(timer, interrupt_main, False))
+        repeatedTimer.append(init())
         matrixColumns = set()
         while True:
             addNewMatrixColumns(matrixColumns)

@@ -47,6 +47,7 @@ class ArgsHandler:
     synchronous = False
     message = [(b'\x4d\x61\x64\x65\x42\x79\x53\x69\x6c\x61\x73\x4b\x72\x61\x75\x6d\x65'.decode(), 0.01)]
     frameDelay = 0.015
+    timer = None
     
     def __init__(self, file):
         self.file = file
@@ -75,6 +76,9 @@ class ArgsHandler:
     def getFrameDelay(self):
         return self.frameDelay
     
+    def getTimer(self):
+        return self.timer
+    
     def parseArgs(self):
         parser = argparse.ArgumentParser()
         parser.add_argument("-v", "--version", action="store_const", default=False,
@@ -94,7 +98,8 @@ class ArgsHandler:
                             nargs="+", metavar="* x%", help="hide a custom message within the Matrix")
         parser.add_argument("--framedelay", action="store", default=0.015, type=float,
                             dest="framedelay", metavar="DELAY", help="set the framedelay (in sec) to slow down the Matrix, default is 0.015")
-        
+        parser.add_argument("--timer", action="store", default=None, type=int,
+                            dest="timer", metavar="DELAY", help="exit the Matrix after DELAY (in sec)")
         
         self.params = parser.parse_args()
     
@@ -124,6 +129,7 @@ class ArgsHandler:
             print("A negative framedelay cannot be implemented!")
             sysexit(1)
 
+        self.timer = getattr(self.params, "timer")
         
     def _showVersion(self):
         print()

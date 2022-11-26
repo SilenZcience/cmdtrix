@@ -22,6 +22,20 @@ class RepeatedTimer(object):
             self._timer.start()
             self.is_running = True
 
-    def stop(self):
+    def cancel(self):
         self._timer.cancel()
         self.is_running = False
+
+class EventTimer(object):
+    def __init__(self, interval, function,  repeated=True, *args, **kwargs):
+        if repeated:
+            self.thread = RepeatedTimer(interval, function, *args, **kwargs)
+        else:
+            self.thread = Timer(interval, function, *args, **kwargs)
+            self.start()
+
+    def start(self):
+        self.thread.start()
+
+    def cancel(self):
+        self.thread.cancel()

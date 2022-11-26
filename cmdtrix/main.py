@@ -22,7 +22,7 @@ NUMBER_OF_MATRIXCOLUMNS = cols
 MAX_SPEED_TICKS = 5
 COLOR = "green"
 
-EASTER_EGG_MESSAGE = b'\x4d\x61\x64\x65\x42\x79\x53\x69\x6c\x61\x73\x4b\x72\x61\x75\x6d\x65'.decode()
+HIDDEN_MESSAGE = []
 
 SYNCHRONOUS = False
 CHANCE_FOR_DIM = 0.0
@@ -44,8 +44,8 @@ class MatrixColumn:
     yPositionErased = 1
     lastChar = ""
 
-    easter_egg = False
-    easter_egg_gen = None
+    message_event = False
+    message_event_gen = None
 
     def __init__(self, col):
         self.col = col
@@ -55,17 +55,20 @@ class MatrixColumn:
         self.lineLength = randrange(MINIMUM_LINE_LENGTH, MAXIMUM_LINE_LENGTH+1)
         self.maxYPosition = min(rows, randrange(2*rows))
 
-        self.easter_egg = (random() < 0.9) and (self.maxYPosition > len(EASTER_EGG_MESSAGE) + 1)
-        if self.easter_egg:
-            self.easter_egg_gen = getNextChar(self.maxYPosition - len(EASTER_EGG_MESSAGE) - 1)
+
+        for i in range(len(HIDDEN_MESSAGE)):
+            self.message_event = (random() < HIDDEN_MESSAGE[i][1]) and (self.maxYPosition > len(HIDDEN_MESSAGE[i][0]) + 1)
+            if self.message_event:
+                self.message_event_gen = getNextChar(HIDDEN_MESSAGE[i][0], self.maxYPosition - len(HIDDEN_MESSAGE[i][0]) - 1)
+                break
 
     def update(self):
         self.currentTick = (self.currentTick % self.speedTickCap + 1)
         
         if self.currentTick == self.speedTicks:
             if self.yPositionSet <= self.maxYPosition:
-                if self.easter_egg:
-                    self.lastChar = next(self.easter_egg_gen)
+                if self.message_event:
+                    self.lastChar = next(self.message_event_gen)
                 if random() < CHANCE_FOR_DIM:
                     printCode("2m")
                 if random() < CHANCE_FOR_ITALIC:
@@ -87,8 +90,8 @@ class MatrixColumn:
             printAtPosition(self.lastChar, self.col, self.yPositionSet-1, "white")
 
         
-def getNextChar(xSpace):
-    yield from choices(charList, k=randrange(1, xSpace+1)) + list(EASTER_EGG_MESSAGE)
+def getNextChar(hMessage, xSpace):
+    yield from choices(charList, k=randrange(1, xSpace+1)) + list(hMessage)
     while True:
         yield choice(charList)
 
@@ -166,6 +169,8 @@ def main():
         CHANCE_FOR_ITALIC = argsHandler.getItalic()
         global SYNCHRONOUS
         SYNCHRONOUS = argsHandler.getSynchronous()
+        global HIDDEN_MESSAGE
+        HIDDEN_MESSAGE = argsHandler.getMessage()
         exitOnArg = False
         
         repeatedTimer = init()

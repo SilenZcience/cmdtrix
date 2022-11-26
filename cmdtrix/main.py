@@ -121,7 +121,7 @@ def checkTerminalSize() -> None:
         printCode("2J")  # clear screen
 
 
-def addNewMatrixColumns(matrixColumns: set[MatrixColumn]) -> None:
+def addNewMatrixColumns(matrixColumns: set) -> None:
     """
     add a new MatrixColumn every Tick, if the MAX has not been
     reached yet
@@ -132,12 +132,12 @@ def addNewMatrixColumns(matrixColumns: set[MatrixColumn]) -> None:
     matrixColumns.add(MatrixColumn(col))
 
 
-def updateMatrixColumns(matrixColumns: set[MatrixColumn]) -> None:
+def updateMatrixColumns(matrixColumns: set) -> None:
     for matrixColumn in matrixColumns:
         matrixColumn.update()
 
 
-def getFinishedColumns(matrixColumns: set[MatrixColumn]) -> set[MatrixColumn]:
+def getFinishedColumns(matrixColumns: set):
     finishedColumns = set()
     for matrixColumn in matrixColumns:
         if matrixColumn.finished:
@@ -152,7 +152,7 @@ def init() -> None:
     return EventTimer(10, checkTerminalSize)
 
 
-def deinit(eventTimer: list[EventTimer]) -> None:
+def deinit(eventTimer: list) -> None:
     printCode("m")  # reset attributes
     printCode("2J")  # clear screen
     printCode("?25h")  # show cursor

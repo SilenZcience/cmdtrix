@@ -90,13 +90,15 @@ pip install git+https://github.com/SilenZcience/cmdtrix.git
 cmdtrix [-h] [-c COLOR] ...
 ```
 
-| Argument               | Description                                       |
-|------------------------|---------------------------------------------------|
-| -v, --version          | number all output lines                           |
-| -s, --synchronous      | sync the matrix columns speed                     |
-| -c [\*], --color [\*]  | set the color to *                                |
-| -d x%, --dim x%        | add chance for dim characters                     |
-| -i x%, --italic x%     | add chance for italic characters                  |
+| Argument               | Description                                        |
+|------------------------|----------------------------------------------------|
+| -v, --version          | number all output lines                            |
+| -s, --synchronous      | sync the matrix columns speed                      |
+| -c [\*], --color [\*]  | set the color to *                                 |
+| -d x%, --dim x%        | add chance for dim characters                      |
+| -i x%, --italic x%     | add chance for italic characters                   |
+| -m * x%                | hide a custom message within the Matrix            |
+| --framedelay DELAY     | set the framedelay (in sec) to slow down the Matrix|
 
 ### Examples
 

@@ -99,6 +99,7 @@ cmdtrix [-h] [-c COLOR] ...
 | -i x%, --italic x%     | add chance for italic characters                   |
 | -m * x%                | hide a custom message within the Matrix            |
 | --framedelay DELAY     | set the framedelay (in sec) to slow down the Matrix|
+| --timer DELAY          | exit the Matrix after DELAY (in sec) automatically |
 
 ### Examples
 

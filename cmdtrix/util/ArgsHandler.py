@@ -98,7 +98,7 @@ class ArgsHandler:
                             nargs="+", metavar="* x%", help="hide a custom message within the Matrix")
         parser.add_argument("--framedelay", action="store", default=0.015, type=float,
                             dest="framedelay", metavar="DELAY", help="set the framedelay (in sec) to slow down the Matrix, default is 0.015")
-        parser.add_argument("--timer", action="store", default=None, type=int,
+        parser.add_argument("--timer", action="store", default=None, type=float,
                             dest="timer", metavar="DELAY", help="exit the Matrix after DELAY (in sec)")
         
         self.params = parser.parse_args()

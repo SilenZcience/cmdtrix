@@ -37,7 +37,7 @@ class MatrixColumn:
     currentTick = 0
     speedTicks = None
     speedTickCap = None
-    
+
     lineLength = 0
     maxYPosition = 0
     yPositionSet = 1
@@ -51,29 +51,26 @@ class MatrixColumn:
         self.col = col
         self.speedTicks = randrange(1, MAX_SPEED_TICKS + 1)
         self.speedTickCap = (MAX_SPEED_TICKS if SYNCHRONOUS else self.speedTicks)
-        
+
         self.lineLength = randrange(MINIMUM_LINE_LENGTH, MAXIMUM_LINE_LENGTH+1)
         self.maxYPosition = min(rows, randrange(2*rows))
 
-
         for i in range(len(HIDDEN_MESSAGE)):
-            self.message_event = (random() < HIDDEN_MESSAGE[i][1]) and (self.maxYPosition > len(HIDDEN_MESSAGE[i][0]) + 1)
+            self.message_event = (random() < HIDDEN_MESSAGE[i][1]) and (
+                self.maxYPosition > len(HIDDEN_MESSAGE[i][0]) + 1)
             if self.message_event:
-                self.message_event_gen = getNextChar(HIDDEN_MESSAGE[i][0], self.maxYPosition - len(HIDDEN_MESSAGE[i][0]) - 1)
+                self.message_event_gen = getNextChar(
+                    HIDDEN_MESSAGE[i][0], self.maxYPosition - len(HIDDEN_MESSAGE[i][0]) - 1)
                 break
 
     def update(self):
         self.currentTick = (self.currentTick % self.speedTickCap + 1)
-        
+
         if self.currentTick == self.speedTicks:
             if self.yPositionSet <= self.maxYPosition:
                 if self.message_event:
                     self.lastChar = next(self.message_event_gen)
-                if random() < CHANCE_FOR_DIM:
-                    printCode("2m")
-                if random() < CHANCE_FOR_ITALIC:
-                    printCode("3m")               
-                printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR)
+                printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR, ("2;" if random() < CHANCE_FOR_DIM else "") + ("3;" if random() < CHANCE_FOR_ITALIC else ""))
                 newChar = choice(charList)
                 printAtPosition(newChar, self.col, self.yPositionSet, "white")
                 self.lastChar = newChar
@@ -89,7 +86,7 @@ class MatrixColumn:
             self.lastChar = choice(charList)
             printAtPosition(self.lastChar, self.col, self.yPositionSet-1, "white")
 
-        
+
 def getNextChar(hMessage: str, xSpace: int) -> str:
     yield from choices(charList, k=randrange(1, xSpace+1)) + list(hMessage)
     while True:
@@ -100,10 +97,9 @@ def printCode(*code: str) -> None:
     print("\x1b[" + "\x1b[".join(code), end="")
 
 
-def printAtPosition(text: str, x: int, y: int, color: str) -> None:
-    printCode("%d;%df" % (y, x), colorCodes[color] + "m") # reset attributes, set position, set color
+def printAtPosition(text: str, x: int, y: int, color: str, style: int = "") -> None:
+    printCode("m", "%d;%df" % (y, x), style + colorCodes[color] + "m") # reset attributes, set position, set color
     print(text, end="", flush=True)
-    printCode("m")
 
 
 def checkTerminalSize() -> None:
@@ -155,6 +151,7 @@ def deinit(eventTimer: list) -> None:
         if timer != None:
             timer.cancel()
 
+
 def main():
     repeatedTimer = []
     exitOnArg = True
@@ -173,7 +170,7 @@ def main():
         global FRAME_DELAY
         FRAME_DELAY = argsHandler.getFrameDelay()
         exitOnArg = False
-        
+
         timer = argsHandler.getTimer()
         if timer != None:
             repeatedTimer.append(EventTimer(timer, interrupt_main, False))

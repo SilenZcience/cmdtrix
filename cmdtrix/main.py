@@ -101,8 +101,9 @@ def printCode(*code: str) -> None:
 
 
 def printAtPosition(text: str, x: int, y: int, color: str) -> None:
-    printCode("m", "%d;%df" % (y, x), colorCodes[color] + "m") # reset attributes, set position, set color
+    printCode("%d;%df" % (y, x), colorCodes[color] + "m") # reset attributes, set position, set color
     print(text, end="", flush=True)
+    printCode("m")
 
 
 def checkTerminalSize() -> None:

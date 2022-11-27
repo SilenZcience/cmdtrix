@@ -6,7 +6,7 @@ from time import sleep as delay_frame
 from sys import stdout
 from _thread import interrupt_main
 
-from cmdtrix.util.RepeatedTimer import EventTimer
+from cmdtrix.util.EventTimer import EventTimer
 from cmdtrix.util.Chars import charList
 from cmdtrix.util.ArgsHandler import ArgsHandler
 

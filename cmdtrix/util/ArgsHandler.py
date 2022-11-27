@@ -3,6 +3,7 @@ from sys import exit as sysexit
 from datetime import datetime
 from os import path
 from cmdtrix import __version__, __sysversion__, __author__
+from cmdtrix.web.UpdateChecker import printUpdateInformation
 
 def string_integer(default_value):
     """Action for argparse that allows a mandatory and optional
@@ -140,5 +141,6 @@ class ArgsHandler:
         print(f"Python: \t{__sysversion__}")  # sys.version
         print(f"Build time: \t{datetime.fromtimestamp(path.getctime(path.realpath(__file__)))} CET")
         print(f"Author: \t{__author__}")
+        printUpdateInformation("cmdtrix", __version__)
         sysexit(0)
 

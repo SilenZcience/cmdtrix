@@ -97,15 +97,13 @@ def getNextChar(hMessage: str, xSpace: int) -> str:
         yield choice(charList)
 
 
-def printCode(code: str) -> None:
-    print("\x1b[", code, sep="", end="")
+def printCode(*code: str) -> None:
+    print("\x1b[" + "\x1b[".join(code), end="")
 
 
 def printAtPosition(text: str, x: int, y: int, color: str) -> None:
-    printCode("%d;%df" % (y, x))  # set row and col position
-    printCode(colorCodes[color] + "m")  # set color
+    printCode("m", "%d;%df" % (y, x), colorCodes[color] + "m") # reset attributes, set position, set color
     print(text, end="", flush=True)
-    printCode("m") # reset attributes
 
 
 def checkTerminalSize() -> None:
@@ -147,15 +145,12 @@ def getFinishedColumns(matrixColumns: set):
 
 
 def init() -> None:
-    printCode("?25l")  # hide cursor
-    printCode("2J")  # clear screen
+    printCode("?25l", "2J")  # hide cursor, clear screen
     return EventTimer(10, checkTerminalSize)
 
 
 def deinit(eventTimer: list) -> None:
-    printCode("m")  # reset attributes
-    printCode("2J")  # clear screen
-    printCode("?25h")  # show cursor
+    printCode("m", "2J", "?25h")  # reset attributes, clear screen, show cursor
     for timer in eventTimer:
         if timer != None:
             timer.cancel()

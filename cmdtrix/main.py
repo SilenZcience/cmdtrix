@@ -3,7 +3,6 @@ from os import get_terminal_size, system, name as osname
 from colorama import init as coloramaInit
 from random import choice, choices, randrange, random
 from time import sleep as delay_frame
-from sys import stdout
 from _thread import interrupt_main
 
 from cmdtrix.util.EventTimer import EventTimer

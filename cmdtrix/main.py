@@ -26,7 +26,9 @@ HIDDEN_MESSAGE = []
 
 SYNCHRONOUS = False
 CHANCE_FOR_DIM = 0.0
+_DIM_OPTIONS = ['', '2;'] # only for speed improvements
 CHANCE_FOR_ITALIC = 0.0
+_ITALIC_OPTIONS = ['', '3;'] # only for speed improvements
 
 coloramaInit()
 
@@ -70,7 +72,7 @@ class MatrixColumn:
             if self.yPositionSet <= self.maxYPosition:
                 if self.message_event:
                     self.lastChar = next(self.message_event_gen)
-                printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR, ("2;" if random() < CHANCE_FOR_DIM else "") + ("3;" if random() < CHANCE_FOR_ITALIC else ""))
+                printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR, _DIM_OPTIONS[random() < CHANCE_FOR_DIM] + _ITALIC_OPTIONS[random() < CHANCE_FOR_ITALIC])
                 newChar = choice(charList)
                 printAtPosition(newChar, self.col, self.yPositionSet, "white")
                 self.lastChar = newChar
@@ -98,7 +100,7 @@ def printCode(*code: str) -> None:
 
 
 def printAtPosition(text: str, x: int, y: int, color: str, style: int = "") -> None:
-    printCode("m", "%d;%df" % (y, x), style + colorCodes[color] + "m") # reset attributes, set position, set color
+    printCode("m", "%d;%df" % (y, x), style + colorCodes[color] + "m") # reset attributes, set position, set attributes and set color
     print(text, end="", flush=True)
 
 

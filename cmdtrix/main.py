@@ -100,7 +100,7 @@ def printCode(*code: str) -> None:
     print("\x1b[" + "\x1b[".join(code), end="")
 
 
-def printAtPosition(text: str, x: int, y: int, color: str, style: int = "") -> None:
+def printAtPosition(text: str, x: int, y: int, color: str, style: str = "") -> None:
     printCode("m", "%d;%df" % (y, x), style + colorCodes[color] + "m") # reset attributes, set position, set attributes and set color
     print(text, end="", flush=True)
 
@@ -181,13 +181,14 @@ def main():
         ON_KEY_DETECTION = argsHandler.onkey
         exitOnArg = False
         
+        eventTimer.append(init())
         timer = argsHandler.timer
         if timer != None:
             eventTimer.append(EventTimer(timer, interrupt_main, 'Timer'))
         if ON_KEY_DETECTION:
             eventTimer.append(EventTimer(None, None, 'keyboardListener', on_press=on_press))
             print('', flush=True)
-        eventTimer.append(init())
+        
         
         matrixColumns = set()
         while True:

@@ -100,6 +100,7 @@ cmdtrix [-h] [-c COLOR] ...
 | -m * x%                | hide a custom message within the Matrix            |
 | --framedelay DELAY     | set the framedelay (in sec) to slow down the Matrix|
 | --timer DELAY          | exit the Matrix after DELAY (in sec) automatically |
+| --onkey                | only spawn columns on key-press                    |
 
 ### Examples
 

@@ -49,6 +49,7 @@ class ArgsHandler:
     message = [(b'\x4d\x61\x64\x65\x42\x79\x53\x69\x6c\x61\x73\x4b\x72\x61\x75\x6d\x65'.decode(), 0.01)]
     frameDelay = 0.015
     timer = None
+    onkey = False
     
     def __init__(self, file):
         self.file = file
@@ -56,30 +57,6 @@ class ArgsHandler:
         self.parseArgs()
         self.translateArgs()
 
-    def getVersion(self):
-        return self.version
-
-    def getColor(self):
-        return self.color
-    
-    def getDim(self):
-        return self.dim
-    
-    def getItalic(self):
-        return self.italic
-    
-    def getSynchronous(self):
-        return self.synchronous
-    
-    def getMessage(self):
-        return self.message
-    
-    def getFrameDelay(self):
-        return self.frameDelay
-    
-    def getTimer(self):
-        return self.timer
-    
     def parseArgs(self):
         parser = argparse.ArgumentParser()
         parser.add_argument("-v", "--version", action="store_const", default=False,
@@ -101,12 +78,15 @@ class ArgsHandler:
                             dest="framedelay", metavar="DELAY", help="set the framedelay (in sec) to slow down the Matrix, default is 0.015")
         parser.add_argument("--timer", action="store", default=None, type=float,
                             dest="timer", metavar="DELAY", help="exit the Matrix after DELAY (in sec) automatically")
+        parser.add_argument("--onkey", action="store_const", default=False,
+                            const=True, dest="onkey", help="only spawn columns on key-press")
         
         self.params = parser.parse_args()
     
     def translateArgs(self):
         if getattr(self.params, 'version'):
             self._showVersion()
+            sysexit(0)
         
         self.color = getattr(self.params, 'color')
         
@@ -132,6 +112,8 @@ class ArgsHandler:
 
         self.timer = getattr(self.params, "timer")
         
+        self.onkey = getattr(self.params, 'onkey')
+        
     def _showVersion(self):
         print()
         print("------------------------------------------------------------")
@@ -142,5 +124,4 @@ class ArgsHandler:
         print(f"Build time: \t{datetime.fromtimestamp(path.getctime(path.realpath(__file__)))} CET")
         print(f"Author: \t{__author__}")
         printUpdateInformation("cmdtrix", __version__)
-        sysexit(0)
 

@@ -28,6 +28,9 @@ SYNCHRONOUS = False
 CHANCE_FOR_DIM = 0.0
 CHANCE_FOR_ITALIC = 0.0
 
+ON_KEY_DETECTION = True
+keyDetected = 0
+
 coloramaInit()
 
 
@@ -115,15 +118,22 @@ def checkTerminalSize() -> None:
         printCode("2J")  # clear screen
 
 
-def addNewMatrixColumns(matrixColumns: set) -> None:
+def on_press(key):
+    global keyDetected
+    keyDetected += 1
+
+
+def addNewMatrixColumns(matrixColumns: set, condition) -> None:
     """
     add a new MatrixColumn every Tick, if the MAX has not been
     reached yet
     """
-    if len(matrixColumns) >= NUMBER_OF_MATRIXCOLUMNS:
+    if len(matrixColumns) >= NUMBER_OF_MATRIXCOLUMNS or not condition:
         return
     col = randrange(cols+1)
     matrixColumns.add(MatrixColumn(col))
+    global keyDetected
+    keyDetected = max(0, keyDetected-1)
 
 
 def updateMatrixColumns(matrixColumns: set) -> None:
@@ -148,36 +158,40 @@ def init() -> None:
 def deinit(eventTimer: list) -> None:
     printCode("m", "2J", "?25h")  # reset attributes, clear screen, show cursor
     for timer in eventTimer:
-        if timer != None:
-            timer.cancel()
-
+        timer.cancel()
 
 def main():
-    repeatedTimer = []
+    eventTimer = []
     exitOnArg = True
     try:
         argsHandler = ArgsHandler(__file__)
         global COLOR
-        COLOR = argsHandler.getColor()
+        COLOR = argsHandler.color
         global CHANCE_FOR_DIM
-        CHANCE_FOR_DIM = argsHandler.getDim()
+        CHANCE_FOR_DIM = argsHandler.dim
         global CHANCE_FOR_ITALIC
-        CHANCE_FOR_ITALIC = argsHandler.getItalic()
+        CHANCE_FOR_ITALIC = argsHandler.italic
         global SYNCHRONOUS
-        SYNCHRONOUS = argsHandler.getSynchronous()
+        SYNCHRONOUS = argsHandler.synchronous
         global HIDDEN_MESSAGE
-        HIDDEN_MESSAGE = argsHandler.getMessage()
+        HIDDEN_MESSAGE = argsHandler.message
         global FRAME_DELAY
-        FRAME_DELAY = argsHandler.getFrameDelay()
+        FRAME_DELAY = argsHandler.frameDelay
+        global ON_KEY_DETECTION
+        ON_KEY_DETECTION = argsHandler.onkey
         exitOnArg = False
-
-        timer = argsHandler.getTimer()
+        
+        timer = argsHandler.timer
         if timer != None:
-            repeatedTimer.append(EventTimer(timer, interrupt_main, False))
-        repeatedTimer.append(init())
+            eventTimer.append(EventTimer(timer, interrupt_main, 'Timer'))
+        if ON_KEY_DETECTION:
+            eventTimer.append(EventTimer(None, None, 'keyboardListener', on_press=on_press))
+            print('', flush=True)
+        eventTimer.append(init())
+        
         matrixColumns = set()
         while True:
-            addNewMatrixColumns(matrixColumns)
+            addNewMatrixColumns(matrixColumns, not ON_KEY_DETECTION or keyDetected)
             delay_frame(FRAME_DELAY)
             updateMatrixColumns(matrixColumns)
             # stdout.flush()
@@ -186,7 +200,7 @@ def main():
         pass
     finally:
         if not exitOnArg:
-            deinit(repeatedTimer)
+            deinit(eventTimer)
             system('cls' if osname == 'nt' else 'clear')
 
 

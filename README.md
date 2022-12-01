@@ -92,7 +92,7 @@ cmdtrix [-h] [-c COLOR] ...
 
 | Argument               | Description                                        |
 |------------------------|----------------------------------------------------|
-| -v, --version          | number all output lines                            |
+| -v, --version          | output version information                         |
 | -s, --synchronous      | sync the matrix columns speed                      |
 | -c [\*], --color [\*]  | set the color to *                                 |
 | -d x%, --dim x%        | add chance for dim characters                      |

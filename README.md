@@ -70,7 +70,7 @@ This project simply emulates "The Matrix"-effect on any console-terminal.
 
 ### Prerequisites
 
-It is neccessary that a font is installed, which supports the unicode characters used (greek, cyrillic).
+It is necessary that a font is installed that supports the unicode characters used (greek, cyrillic).
 
 ### Installation
 

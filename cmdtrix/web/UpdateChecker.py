@@ -3,7 +3,7 @@ from colorama import Fore, Style
 
 def getLastestPackageVersion(package: str) -> str:
     try:
-        response = getRequest(f'https://pypi.org/pypi/{package}/json')
+        response = getRequest(f'https://pypi.org/pypi/{package}/json', timeout=2)
         return response.json()['info']['version']
     except:
         return "0"

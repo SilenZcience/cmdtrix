@@ -78,7 +78,6 @@ It is necessary that a font is installed that supports the unicode characters us
 ```console
 pip install cmdtrix
 ```
-or
 ```console
 pip install git+https://github.com/SilenZcience/cmdtrix.git
 ```
@@ -88,6 +87,9 @@ pip install git+https://github.com/SilenZcience/cmdtrix.git
 
 ```console
 cmdtrix [-h] [-c COLOR] ...
+```
+```console
+python -m cmdtrix [-h] [-c COLOR] ...
 ```
 
 | Argument               | Description                                        |

@@ -30,7 +30,7 @@ dynamic = [
 ]
 
 [project.scripts]
-cmdtrix = "cmdtrix.main:main"
+cmdtrix = "cmdtrix.__main__:entry_point"
 
 [project.urls]
 Github = "https://github.com/SilenZcience/cmdtrix"

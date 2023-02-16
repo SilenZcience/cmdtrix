@@ -1,4 +1,3 @@
-
 from os import get_terminal_size, system, name as osname
 from colorama import init as coloramaInit
 from random import choice, choices, randrange, random
@@ -28,29 +27,21 @@ SYNCHRONOUS = False
 CHANCE_FOR_DIM = 0.0
 CHANCE_FOR_ITALIC = 0.0
 
-ON_KEY_DETECTION = True
+ON_KEY_DETECTION = False
 keyDetected = 0
 
 coloramaInit()
 
 
 class MatrixColumn:
-    col = None
-    finished = False
-    currentTick = 0
-    speedTicks = None
-    speedTickCap = None
-
-    lineLength = 0
-    maxYPosition = 0
-    yPositionSet = 1
-    yPositionErased = 1
-    lastChar = ""
-
-    message_event = False
-    message_event_gen = None
-
     def __init__(self, col):
+        self.finished = False
+        self.currentTick = 0
+        
+        self.yPositionSet = 1
+        self.yPositionErased = 1
+        self.lastChar = ""
+        
         self.col = col
         self.speedTicks = randrange(1, MAX_SPEED_TICKS + 1)
         self.speedTickCap = (MAX_SPEED_TICKS if SYNCHRONOUS else self.speedTicks)
@@ -58,6 +49,8 @@ class MatrixColumn:
         self.lineLength = randrange(MINIMUM_LINE_LENGTH, MAXIMUM_LINE_LENGTH+1)
         self.maxYPosition = min(rows, randrange(2*rows))
 
+        self.message_event = False
+        self.message_event_gen = None
         for i in range(len(HIDDEN_MESSAGE)):
             self.message_event = (random() < HIDDEN_MESSAGE[i][1]) and (
                 self.maxYPosition > len(HIDDEN_MESSAGE[i][0]) + 1)

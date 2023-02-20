@@ -45,7 +45,6 @@ class EventTimer(object):
         elif type == options[2]:
             self.thread = KeyboardListener(*args, **kwargs)
         else:
-            print("FUCK")
             raise ValueError('Allowed are only the following options: ' + ','.join(options))
         self.thread.start()
 

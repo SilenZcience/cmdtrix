@@ -66,7 +66,7 @@ class MatrixColumn:
             if self.yPositionSet <= self.maxYPosition:
                 if self.message_event:
                     self.lastChar = next(self.message_event_gen)
-                printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR,  ("2;" if random() < CHANCE_FOR_DIM else "") + ("3;" if random() < CHANCE_FOR_ITALIC else ""))
+                printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR,  ("2;" * (random() < CHANCE_FOR_DIM)) + ("3;" * (random() < CHANCE_FOR_ITALIC)))
                 newChar = choice(charList)
                 printAtPosition(newChar, self.col, self.yPositionSet, "white")
                 self.lastChar = newChar

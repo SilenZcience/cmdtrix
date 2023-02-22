@@ -37,23 +37,22 @@ def string_integer(default_value):
             
 
 class ArgsHandler:
-    file = None
-    workingDir = None
-    
-    params = None
-
-    color = "green"
-    dim = 0.0
-    italic = 0.0
-    synchronous = False
-    message = [(b'\x4d\x61\x64\x65\x42\x79\x53\x69\x6c\x61\x73\x4b\x72\x61\x75\x6d\x65'.decode(), 0.01)]
-    frameDelay = 0.015
-    timer = None
-    onkey = False
-    
     def __init__(self, file):
         self.file = file
         self.workingDir = path.dirname(path.realpath(self.file))
+        
+        self.params = None
+
+        self.color = "green"
+        self.color_peak = "white"
+        self.dim = 0.0
+        self.italic = 0.0
+        self.synchronous = False
+        self.message = [(b'\x4d\x61\x64\x65\x42\x79\x53\x69\x6c\x61\x73\x4b\x72\x61\x75\x6d\x65'.decode(), 0.01)]
+        self.frameDelay = 0.015
+        self.timer = None
+        self.onkey = False
+        
         self.parseArgs()
         self.translateArgs()
 
@@ -65,7 +64,10 @@ class ArgsHandler:
                             const=True, dest="synchronous", help="sync the matrix columns speed")
         parser.add_argument("-c", "--color", action="store", default="green",
                         choices=["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"], 
-                        dest="color", metavar="[*]", help="set the color to *")
+                        dest="color", metavar="[*]", help="set the main-color to *")
+        parser.add_argument("-p", "--peak", action="store", default="white",
+                        choices=["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"], 
+                        dest="peak", metavar="[*]", help="set the peak-color to *")
         parser.add_argument("-d", "--dim", action="store", default=1.0,
                             type=float, dest="dim", metavar="x%",
                             help="add chance for dim characters")
@@ -89,6 +91,7 @@ class ArgsHandler:
             sysexit(0)
         
         self.color = getattr(self.params, 'color')
+        self.color_peak = getattr(self.params, 'peak')
         
         self.dim = getattr(self.params, 'dim') / 100
         if not 0.0 <= self.dim <= 1.0:

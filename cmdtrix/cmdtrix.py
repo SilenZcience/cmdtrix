@@ -20,6 +20,7 @@ MAXIMUM_LINE_LENGTH = rows
 NUMBER_OF_MATRIXCOLUMNS = cols
 MAX_SPEED_TICKS = 5
 COLOR = "green"
+COLOR_PEAK = "white"
 
 HIDDEN_MESSAGE = []
 
@@ -68,7 +69,7 @@ class MatrixColumn:
                     self.lastChar = next(self.message_event_gen)
                 printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR,  ("2;" * (random() < CHANCE_FOR_DIM)) + ("3;" * (random() < CHANCE_FOR_ITALIC)))
                 self.lastChar  = choice(charList)
-                printAtPosition(self.lastChar , self.col, self.yPositionSet, "white")
+                printAtPosition(self.lastChar , self.col, self.yPositionSet, COLOR_PEAK)
             elif self.yPositionSet == self.maxYPosition + 1 and self.maxYPosition >= rows:
                 printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR)
             if self.yPositionSet > self.lineLength:
@@ -79,7 +80,7 @@ class MatrixColumn:
             self.yPositionSet += 1
         elif self.yPositionSet <= self.maxYPosition:
             self.lastChar = choice(charList)
-            printAtPosition(self.lastChar, self.col, self.yPositionSet-1, "white")
+            printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR_PEAK)
 
 
 def getNextChar(hMessage: str, xSpace: int) -> str:
@@ -163,6 +164,8 @@ def main():
         argsHandler = ArgsHandler(__file__)
         global COLOR
         COLOR = argsHandler.color
+        global COLOR_PEAK
+        COLOR_PEAK = argsHandler.color_peak
         global CHANCE_FOR_DIM
         CHANCE_FOR_DIM = argsHandler.dim
         global CHANCE_FOR_ITALIC

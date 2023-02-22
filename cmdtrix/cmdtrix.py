@@ -67,9 +67,8 @@ class MatrixColumn:
                 if self.message_event:
                     self.lastChar = next(self.message_event_gen)
                 printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR,  ("2;" * (random() < CHANCE_FOR_DIM)) + ("3;" * (random() < CHANCE_FOR_ITALIC)))
-                newChar = choice(charList)
-                printAtPosition(newChar, self.col, self.yPositionSet, "white")
-                self.lastChar = newChar
+                self.lastChar  = choice(charList)
+                printAtPosition(self.lastChar , self.col, self.yPositionSet, "white")
             elif self.yPositionSet == self.maxYPosition + 1 and self.maxYPosition >= rows:
                 printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR)
             if self.yPositionSet > self.lineLength:
@@ -89,13 +88,17 @@ def getNextChar(hMessage: str, xSpace: int) -> str:
         yield choice(charList)
 
 
+def getCode(*code: str) -> str:
+    return "\x1b[" + "\x1b[".join(code)
+
+
 def printCode(*code: str) -> None:
-    print("\x1b[" + "\x1b[".join(code), end="")
+    print(getCode(*code), end="")
 
 
 def printAtPosition(text: str, x: int, y: int, color: str, style: str = "") -> None:
-    printCode("m", "%d;%df" % (y, x), style + colorCodes[color] + "m") # reset attributes, set position, set attributes and set color
-    print(text, end="", flush=True)
+    # reset attributes, set position, set attributes and set color, concatenate with char
+    print(getCode("m", "%d;%df" % (y, x), style + colorCodes[color] + "m"), text, sep="", end="", flush=True)
 
 
 def checkTerminalSize() -> None:

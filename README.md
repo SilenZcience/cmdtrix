@@ -96,7 +96,8 @@ python -m cmdtrix [-h] [-c COLOR] ...
 |------------------------|----------------------------------------------------|
 | -v, --version          | output version information                         |
 | -s, --synchronous      | sync the matrix columns speed                      |
-| -c [\*], --color [\*]  | set the color to *                                 |
+| -c [\*], --color [\*]  | set the main-color to *                            |
+| -p [\*], --peak [\*]   | set the peak-color to *                            |
 | -d x%, --dim x%        | add chance for dim characters                      |
 | -i x%, --italic x%     | add chance for italic characters                   |
 | -m * x%                | hide a custom message within the Matrix            |

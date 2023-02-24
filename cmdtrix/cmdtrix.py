@@ -3,6 +3,7 @@ from colorama import init as coloramaInit
 from random import choice, choices, randrange, random
 from time import sleep as delay_frame
 from _thread import interrupt_main
+from functools import lru_cache
 
 from cmdtrix.util.EventTimer import EventTimer
 from cmdtrix.util.Chars import charList
@@ -89,6 +90,7 @@ def getNextChar(hMessage: str, xSpace: int) -> str:
         yield choice(charList)
 
 
+@lru_cache(maxsize=min(cols*rows, 5000))
 def getCode(*code: str) -> str:
     return "\x1b[" + "\x1b[".join(code)
 

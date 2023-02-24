@@ -107,9 +107,9 @@ python -m cmdtrix [-h] [-c COLOR] ...
 
 ### Examples
 
-![Example1](https://raw.githubusercontent.com/SilenZcience/cmdtrix/main/img/example1.png "example1")
+![Example1](https://raw.githubusercontent.com/SilenZcience/cmdtrix/main/img/example1.gif "example1")
 
-![Example2](https://raw.githubusercontent.com/SilenZcience/cmdtrix/main/img/example2.png "example2")
+![Example2](https://raw.githubusercontent.com/SilenZcience/cmdtrix/main/img/example2.gif "example2")
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

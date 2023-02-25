@@ -139,12 +139,7 @@ def updateMatrixColumns(matrixColumns: set) -> None:
 
 
 def getFinishedColumns(matrixColumns: set):
-    finishedColumns = set()
-    for matrixColumn in matrixColumns:
-        if matrixColumn.finished:
-            finishedColumns.add(matrixColumn)
-
-    return finishedColumns
+    return set(filter(lambda x: x.finished, matrixColumns))
 
 
 def init() -> None:

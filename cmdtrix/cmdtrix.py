@@ -1,6 +1,6 @@
 from os import get_terminal_size, system, name as osname
 from colorama import init as coloramaInit
-from random import choice, choices, randrange, random
+from random import choices, randrange, random
 from time import sleep as delay_frame
 from _thread import interrupt_main
 from functools import lru_cache
@@ -51,14 +51,17 @@ class MatrixColumn:
         self.lineLength = randrange(MINIMUM_LINE_LENGTH, MAXIMUM_LINE_LENGTH+1)
         self.maxYPosition = min(rows, randrange(2*rows))
 
+        self.chars = choices(charList, k=self.speedTickCap * (self.maxYPosition - 1) + self.speedTicks)
+        self.message_chars = []
+        
         self.message_event = False
-        self.message_event_gen = None
-        for i in range(len(HIDDEN_MESSAGE)):
-            self.message_event = (random() < HIDDEN_MESSAGE[i][1]) and (
-                self.maxYPosition > len(HIDDEN_MESSAGE[i][0]) + 1)
+        for message, chance in HIDDEN_MESSAGE:
+            self.message_event = (self.maxYPosition > len(message) + 1) and (random() < chance)
             if self.message_event:
-                self.message_event_gen = getNextChar(
-                    HIDDEN_MESSAGE[i][0], self.maxYPosition - len(HIDDEN_MESSAGE[i][0]) - 1)
+                freeCharCount = self.maxYPosition - len(message)
+                randomChars = choices(charList, k=freeCharCount)
+                randomSplit = randrange(1, freeCharCount+1)
+                self.message_chars = randomChars[:randomSplit] + list(message) + randomChars[randomSplit:]
                 break
 
     def update(self):
@@ -67,11 +70,11 @@ class MatrixColumn:
         if self.currentTick == self.speedTicks:
             if self.yPositionSet <= self.maxYPosition:
                 if self.message_event:
-                    self.lastChar = next(self.message_event_gen)
+                    self.lastChar = self.message_chars.pop()
                 printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR,  ("2;" * (random() < CHANCE_FOR_DIM)) + ("3;" * (random() < CHANCE_FOR_ITALIC)))
-                self.lastChar  = choice(charList)
+                self.lastChar = self.chars.pop()
                 printAtPosition(self.lastChar , self.col, self.yPositionSet, COLOR_PEAK)
-            elif self.yPositionSet == self.maxYPosition + 1 and self.maxYPosition >= rows:
+            elif self.yPositionSet - 1 == self.maxYPosition >= rows:
                 printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR)
             if self.yPositionSet > self.lineLength:
                 printAtPosition(" ", self.col, self.yPositionErased, "black")
@@ -80,14 +83,8 @@ class MatrixColumn:
 
             self.yPositionSet += 1
         elif self.yPositionSet <= self.maxYPosition:
-            self.lastChar = choice(charList)
+            self.lastChar = self.chars.pop()
             printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR_PEAK)
-
-
-def getNextChar(hMessage: str, xSpace: int) -> str:
-    yield from choices(charList, k=randrange(1, xSpace+1)) + list(hMessage)
-    while True:
-        yield choice(charList)
 
 
 @lru_cache(maxsize=min(cols*rows, 5000))
@@ -122,7 +119,7 @@ def on_press(key):
     keyDetected += 1
 
 
-def addNewMatrixColumns(matrixColumns: set, condition) -> None:
+def addNewMatrixColumns(matrixColumns: set, condition: bool) -> None:
     """
     add a new MatrixColumn every Tick, if the MAX has not been
     reached yet

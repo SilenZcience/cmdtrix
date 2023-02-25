@@ -53,16 +53,19 @@ class MatrixColumn:
         self.maxYPosition = min(rows, randrange(2*rows))
 
         self.chars = choices(charList, k=self.speedTickCap * (self.maxYPosition - 1) + self.speedTicks)
-        self.message_chars = []
         
         self.message_event = False
-        for message, chance in HIDDEN_MESSAGE:
+        self.message_chars = []
+        self.message_color = None
+        self.message_begin = 0
+        self.message_length = 0
+        for message, chance, color in HIDDEN_MESSAGE:
             self.message_event = (self.maxYPosition > len(message) + 1) and (random() < chance)
             if self.message_event:
-                freeCharCount = self.maxYPosition - len(message)
-                randomChars = choices(charList, k=freeCharCount)
-                randomSplit = randrange(1, freeCharCount+1)
-                self.message_chars = randomChars[:randomSplit] + list(message) + randomChars[randomSplit:]
+                self.message_chars = list(message)
+                self.message_color = color
+                self.message_begin = randrange(1, self.maxYPosition - len(message)+1)
+                self.message_length = len(self.message_chars)
                 break
 
     def update(self):
@@ -70,9 +73,11 @@ class MatrixColumn:
 
         if self.currentTick == self.speedTicks:
             if self.yPositionSet <= self.maxYPosition:
-                if self.message_event:
-                    self.lastChar = self.message_chars.pop()
-                printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR,  ("2;" * (random() < CHANCE_FOR_DIM)) + ("3;" * (random() < CHANCE_FOR_ITALIC)))
+                if self.message_event and self.message_begin <= self.yPositionSet < self.message_begin + self.message_length:
+                    self.lastChar = self.message_chars.pop(0)
+                    printAtPosition(self.lastChar, self.col, self.yPositionSet-1, self.message_color,  ("2;" * (random() < CHANCE_FOR_DIM)) + ("3;" * (random() < CHANCE_FOR_ITALIC)))
+                else:
+                    printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR,  ("2;" * (random() < CHANCE_FOR_DIM)) + ("3;" * (random() < CHANCE_FOR_ITALIC)))
                 self.lastChar = self.chars.pop()
                 printAtPosition(self.lastChar , self.col, self.yPositionSet, COLOR_PEAK)
             elif self.yPositionSet - 1 == self.maxYPosition >= rows:
@@ -169,7 +174,7 @@ def main():
         global SYNCHRONOUS
         SYNCHRONOUS = argsHandler.synchronous
         global HIDDEN_MESSAGE
-        HIDDEN_MESSAGE = argsHandler.message
+        HIDDEN_MESSAGE = argsHandler.messages
         global FRAME_DELAY
         FRAME_DELAY = argsHandler.frameDelay
         global ON_KEY_DETECTION

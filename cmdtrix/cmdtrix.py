@@ -1,4 +1,5 @@
 from os import get_terminal_size, system, name as osname
+from sys import exit
 from colorama import just_fix_windows_console
 from random import choices, randrange, random
 from time import sleep as delay_frame
@@ -159,6 +160,7 @@ def deinit(eventTimer: list) -> None:
 def main():
     eventTimer = []
     exitOnArg = True
+    exitStatus = 0
     try:
         argsHandler = ArgsHandler(__file__)
         global COLOR
@@ -197,10 +199,13 @@ def main():
             matrixColumns.difference_update(getFinishedColumns(matrixColumns))
     except KeyboardInterrupt:
         pass
+    except Exception:
+        exitStatus = 1
     finally:
         if not exitOnArg:
             deinit(eventTimer)
             system('cls' if osname == 'nt' else 'clear')
+    exit(exitStatus)
 
 
 if __name__ == '__main__':

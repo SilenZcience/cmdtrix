@@ -3,7 +3,7 @@ from sys import exit
 try:
     import cmdtrix.cmdtrix as cmdtrix
 except KeyboardInterrupt:
-    exit(1)
+    exit(0)
 except:
     print("an error occured while loading the module")
     exit(1)

@@ -4,7 +4,8 @@ def genCharList(unicode_start, unicode_end):
 
 
 basicLatinChars = genCharList(48, 127)
-greekChars = genCharList(910, 1024)
+greekChars = genCharList(910, 930) #930 broken
+greekChars += genCharList(931, 1024)
 cyrillicChars = genCharList(1024, 1154)
 
 

@@ -107,6 +107,8 @@ python -m cmdtrix [-h] [-c COLOR] ...
 
 ### Examples
 
+![Example0](https://raw.githubusercontent.com/SilenZcience/cmdtrix/main/img/cmdtrix.gif "example0")
+
 ![Example1](https://raw.githubusercontent.com/SilenZcience/cmdtrix/main/img/example1.gif "example1")
 
 ![Example2](https://raw.githubusercontent.com/SilenZcience/cmdtrix/main/img/example2.gif "example2")

@@ -9,24 +9,32 @@ authors = [{name = "Silas A. Kraume", email = "silas.kraume1552@gmail.com"}]
 readme = "README.md"
 license = {file = "LICENSE"}
 keywords = [
-    "python",
+    "console",
+    "crossplatform",
     "matrix",
-    "console"
+    "python",
+    "terminal",
 ]
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Environment :: Console",
-    "Operating System :: OS Independent"
+    "Operating System :: OS Independent",
+    "Topic :: Terminals",
 ]
 dependencies = [
     "colorama>=0.4.6",
     "pynput>=1.6.0",
-    "requests>=2.26.0"
+    "requests>=2.26.0",
 ]
 dynamic = [
     "version",
-    "description"
+    "description",
 ]
 
 [project.scripts]

@@ -4,8 +4,9 @@ try:
     import cmdtrix.cmdtrix as cmdtrix
 except KeyboardInterrupt:
     exit(0)
-except:
+except Exception as e:
     print("an error occured while loading the module")
+    # print(e)
     exit(1)
 
 def entry_point():

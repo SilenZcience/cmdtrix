@@ -136,7 +136,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 [OS-MacOS]: https://svgshare.com/i/ZjP.svg
 
 [MadeWith-Python]: https://img.shields.io/badge/Made%20with-Python-brightgreen
-[Python-Version]: https://img.shields.io/badge/python-3.7%7C3.8%7C3.9%7C3.10%7C3.11-blue
+[Python-Version]: https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue
 
 [CurrentVersion]: https://img.shields.io/pypi/v/cmdtrix.svg
 

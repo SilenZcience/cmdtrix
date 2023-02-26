@@ -78,6 +78,7 @@ It is necessary that a font is installed that supports the unicode characters us
 
 ### Installation
 [![Version][CurrentVersion]](https://pypi.org/project/cmdtrix/)
+
 1. install the python package ([PyPI-cmdtrix](https://pypi.org/project/cmdtrix/)):
 ```console
 pip install cmdtrix

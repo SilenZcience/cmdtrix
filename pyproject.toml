@@ -30,7 +30,6 @@ classifiers = [
 dependencies = [
     "colorama>=0.4.6",
     "pynput>=1.6.0",
-    "requests>=2.26.0",
 ]
 dynamic = [
     "version",

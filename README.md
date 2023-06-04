@@ -1,11 +1,11 @@
 <div id="top"></div>
 
 <p>
-   <a href="https://pypi.org/project/cmdtrix/" alt="Downloads">
-      <img src="https://static.pepy.tech/personalized-badge/cmdtrix?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads" align="right">
+   <a href="https://pepy.tech/project/cmdtrix/" alt="Downloads">
+      <img src="https://static.pepy.tech/personalized-badge/cmdtrix?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads" align="right">
    </a>
-   <a href="https://pepy.tech/project/cmdtrix/" alt="Visitors">
-      <img src="https://visitor-badge.laobi.icu/badge?page_id=SilenZcience.cmdtrix" align="right">
+   <a href="https://pypi.org/project/cmdtrix/" alt="Visitors">
+      <img src="https://visitor-badge.laobi.icu/badge?page_id=SilenZcience.cmdtrix&right_color=orange" align="right">
    </a>
    <a href="https://github.com/SilenZcience/cmdtrix/tree/main/cmdtrix/" alt="CodeSize">
       <img src="https://img.shields.io/github/languages/code-size/SilenZcience/cmdtrix?color=purple" align="right">

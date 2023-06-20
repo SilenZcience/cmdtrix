@@ -61,6 +61,7 @@ class ArgsHandler:
         self.synchronous = False
         self.message = (b'\x4d\x61\x64\x65\x42\x79\x53\x69\x6c\x61\x73\x4b\x72\x61\x75\x6d\x65'.decode(), 0.01)
         self.messages = []
+        self.alpha = ""
         self.frameDelay = 0.015
         self.timer = None
         self.onkey = False
@@ -75,11 +76,11 @@ class ArgsHandler:
         parser.add_argument("-s", "--synchronous", action="store_const", default=False,
                             const=True, dest="synchronous", help="sync the matrix columns speed")
         parser.add_argument("-c", "--color", action="store", default="green",
-                        choices=COLOR_CHOICES, 
-                        dest="color", metavar="[*]", help="set the main-color to *")
+                            choices=COLOR_CHOICES,
+                            dest="color", metavar="[*]", help="set the main-color to *")
         parser.add_argument("-p", "--peak", action="store", default="white",
-                        choices=COLOR_CHOICES, 
-                        dest="peak", metavar="[*]", help="set the peak-color to *")
+                            choices=COLOR_CHOICES,
+                            dest="peak", metavar="[*]", help="set the peak-color to *")
         parser.add_argument("-d", "--dim", action="store", default=1.0,
                             type=float, dest="dim", metavar="p",
                             help="add chance p (percent) for dim characters")
@@ -88,6 +89,8 @@ class ArgsHandler:
                             help="add chance p (percent) for italic characters")
         parser.add_argument("-m", action=store_message(0.01, "red"), dest="messages",
                             nargs="+", metavar="* p c", help="hide a custom message * within the Matrix, with chance p and color c")
+        parser.add_argument("--symbols", action="store", default="", type=str, dest="alpha",
+                            metavar="CHARS", help="set a custom series of symbols to choose from")
         parser.add_argument("--framedelay", action="store", default=0.015, type=float,
                             dest="framedelay", metavar="DELAY", help="set the framedelay (in sec) to slow down the Matrix, default is 0.015")
         parser.add_argument("--timer", action="store", default=None, type=float,
@@ -120,6 +123,8 @@ class ArgsHandler:
         self.messages = [(self.message[0], self.message[1], self.color)]
         if getattr(self.params, "messages"):
             self.messages += getattr(self.params, "messages")
+        
+        self.alpha = getattr(self.params, "alpha")
         
         self.frameDelay = getattr(self.params, "framedelay")
         if self.frameDelay < 0.0:

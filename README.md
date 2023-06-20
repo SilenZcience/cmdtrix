@@ -106,6 +106,7 @@ python -m cmdtrix [-h] [-c COLOR] ...
 | -d p, --dim p          | add chance p (percent) for dim characters                            |
 | -i p, --italic p       | add chance p (percent) for italic characters                         |
 | -m * p c               | hide a custom message * within the Matrix, with chance p and color c |
+| --symbols CHARS        | set a custom series of symbols to choose from                        |
 | --framedelay DELAY     | set the framedelay (in sec) to slow down the Matrix, default is 0.015|
 | --timer DELAY          | exit the Matrix after DELAY (in sec) automatically                   |
 | --onkey                | only spawn columns on key-press                                      |
@@ -120,6 +121,8 @@ cmdtrix -m SilenZcience 5 red -m cmdtrix 5 blue -d 5 -m Star*The*Repo 10 magenta
 <!-- ![Example1](https://raw.githubusercontent.com/SilenZcience/cmdtrix/main/img/example1.gif "example1") -->
 
 ![Example2](https://raw.githubusercontent.com/SilenZcience/cmdtrix/main/img/example2.gif "example2")
+
+![Example2](https://raw.githubusercontent.com/SilenZcience/cmdtrix/main/img/example3.gif "example3")
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

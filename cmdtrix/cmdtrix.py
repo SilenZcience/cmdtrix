@@ -175,6 +175,8 @@ def main():
         SYNCHRONOUS = argsHandler.synchronous
         global HIDDEN_MESSAGE
         HIDDEN_MESSAGE = argsHandler.messages
+        global charList
+        charList = [*argsHandler.alpha] if argsHandler.alpha else charList
         global FRAME_DELAY
         FRAME_DELAY = argsHandler.frameDelay
         global ON_KEY_DETECTION

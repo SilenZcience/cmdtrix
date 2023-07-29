@@ -38,6 +38,9 @@ just_fix_windows_console()
 
 class MatrixColumn:
     def __init__(self, col):
+        self.reset(col)
+
+    def reset(self, col):
         self.finished = False
         self.currentTick = 0
         
@@ -125,26 +128,23 @@ def on_press(key):
     keyDetected += 1
 
 
-def addNewMatrixColumns(matrixColumns: set, condition: bool) -> None:
+def updateMatrixColumns(matrixColumns: set) -> None:
     """
     add a new MatrixColumn every Tick, if the MAX has not been
     reached yet
     """
-    if len(matrixColumns) >= NUMBER_OF_MATRIXCOLUMNS or not condition:
+    global keyDetected
+    for matrixColumn in matrixColumns:
+        matrixColumn.update()
+        if matrixColumn.finished and (not ON_KEY_DETECTION or keyDetected):
+            col = randrange(cols+1)
+            matrixColumn.reset(col)
+            keyDetected = max(0, keyDetected-1)
+    if len(matrixColumns) >= NUMBER_OF_MATRIXCOLUMNS or (ON_KEY_DETECTION and not keyDetected):
         return
     col = randrange(cols+1)
     matrixColumns.add(MatrixColumn(col))
-    global keyDetected
     keyDetected = max(0, keyDetected-1)
-
-
-def updateMatrixColumns(matrixColumns: set) -> None:
-    for matrixColumn in matrixColumns:
-        matrixColumn.update()
-
-
-def getFinishedColumns(matrixColumns: set):
-    return set(filter(lambda x: x.finished, matrixColumns))
 
 
 def init() -> None:
@@ -194,11 +194,9 @@ def main():
         
         matrixColumns = set()
         while True:
-            addNewMatrixColumns(matrixColumns, not ON_KEY_DETECTION or keyDetected)
-            delay_frame(FRAME_DELAY)
             updateMatrixColumns(matrixColumns)
+            delay_frame(FRAME_DELAY)
             # stdout.flush()
-            matrixColumns.difference_update(getFinishedColumns(matrixColumns))
     except KeyboardInterrupt:
         pass
     except Exception:

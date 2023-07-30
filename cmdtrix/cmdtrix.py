@@ -7,7 +7,7 @@ from _thread import interrupt_main
 from functools import lru_cache
 
 from cmdtrix.util.EventTimer import EventTimer
-from cmdtrix.util.Chars import charList
+from cmdtrix.util.Chars import charList, japanese
 from cmdtrix.util.ArgsHandler import ArgsHandler
 
 
@@ -177,6 +177,7 @@ def main():
         HIDDEN_MESSAGE = argsHandler.messages
         global charList
         charList = [*argsHandler.alpha] if argsHandler.alpha else charList
+        charList = japanese if argsHandler.japanese else charList
         global FRAME_DELAY
         FRAME_DELAY = argsHandler.frameDelay
         global ON_KEY_DETECTION

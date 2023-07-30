@@ -1,5 +1,5 @@
 """Matrix-console-effect made in Python."""
 
-__version__ = "0.1.7"
-__sysversion__ = '3.11.0 (main, Oct 24 2022, 18:26:48) [MSC v.1933 64 bit (AMD64)]'
+__version__ = "0.1.8"
+__sysversion__ = '3.11.4 (main, Jun  7 2023, 05:45:37) [MSC v.1934 64 bit (AMD64)]'
 __author__ = 'Silas A. Kraume'

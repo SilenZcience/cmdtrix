@@ -1,6 +1,14 @@
 from urllib.request import urlopen
 from json import loads as loadJSON
-from colorama import Fore, Style
+try:
+    from colorama import Fore, Style
+except ImportError:
+    class Fore:
+        YELLOW = '\x1b[33m'
+        LIGHTBLACK_EX = '\x1b[90m'
+        RED = '\x1b[31m'
+    class Style:
+        RESET_ALL = '\x1b[m'
 
 
 # UNSAFE:

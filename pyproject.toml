@@ -28,7 +28,7 @@ classifiers = [
     "Topic :: Terminals",
 ]
 dependencies = [
-    "colorama>=0.4.6",
+    "colorama>=0.4.6; platform_system=='Windows'",
     "pynput>=1.6.0",
 ]
 dynamic = [

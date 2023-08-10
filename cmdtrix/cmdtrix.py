@@ -1,6 +1,9 @@
 from os import get_terminal_size, system, name as osname
 from sys import exit
-from colorama import just_fix_windows_console
+try:
+    from colorama import init as coloramaInit
+except ImportError:
+    nop = lambda *_, **__: None; coloramaInit = nop
 from random import choices, randrange, random
 from time import sleep as delay_frame
 from _thread import interrupt_main
@@ -33,7 +36,7 @@ CHANCE_FOR_ITALIC = 0.0
 ON_KEY_DETECTION = False
 keyDetected = 0
 
-just_fix_windows_console()
+coloramaInit()
 
 
 class MatrixColumn:

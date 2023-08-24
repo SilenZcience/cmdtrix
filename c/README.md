@@ -67,7 +67,7 @@ It is necessary that a font is installed that supports the unicode characters us
 Clone the Repository and navigate to the C-SourceCode:
 ```console
 git clone git@github.com:SilenZcience/cmdtrix.git --depth 1
-cd /cmdtrix/c/src
+cd ./cmdtrix/c/src
 make
 ```
 <p align="right">(<a href="#top">back to top</a>)</p>

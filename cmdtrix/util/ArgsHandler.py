@@ -59,7 +59,7 @@ class ArgsHandler:
         self.dim = 0.0
         self.italic = 0.0
         self.synchronous = False
-        self.message = (b'\x4d\x61\x64\x65\x42\x79\x53\x69\x6c\x61\x73\x4b\x72\x61\x75\x6d\x65'.decode(), 0.01)
+        self.message = (b'\x4d\x61\x64\x65\x42\x79\x53\x69\x6c\x61\x73\x4b\x72\x61\x75\x6d\x65'.decode(), 0.001)
         self.messages = []
         self.alpha = ""
         self.japanese = False

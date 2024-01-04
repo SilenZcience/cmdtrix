@@ -60,21 +60,30 @@
    </ol>
 </details>
 
+<div id="about-the-project"></div>
+
 ## About The Project
 
 This project simply emulates "The Matrix"-effect on any console-terminal.
+
+<div id="made-with"></div>
 
 ### Made With
 [![Python][MadeWith-Python]](https://www.python.org/)
 [![Python][Python-Version]](https://www.python.org/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+<div id="getting-started"></div>
 
 ## Getting Started
+
+<div id="prerequisites"></div>
 
 ### Prerequisites
 
 It is necessary that a font is installed that supports the unicode characters used (greek, cyrillic).
+
+<div id="installation"></div>
 
 ### Installation
 [![Version][CurrentVersion]](https://pypi.org/project/cmdtrix/)
@@ -87,6 +96,7 @@ pip install cmdtrix
 pip install git+https://github.com/SilenZcience/cmdtrix.git
 ```
 <p align="right">(<a href="#top">back to top</a>)</p>
+<div id="usage"></div>
 
 ## Usage
 
@@ -113,6 +123,8 @@ python -m cmdtrix [-h] [-c COLOR] ...
 | --timer DELAY          | exit the Matrix after DELAY (in sec) automatically                   |
 | --onkey                | only spawn columns on key-press                                      |
 
+<div id="examples"></div>
+
 ### Examples
 
 ```console
@@ -127,10 +139,13 @@ cmdtrix -m SilenZcience 5 red -m cmdtrix 5 blue -d 5 -m Star*The*Repo 10 magenta
 ![Example2](https://raw.githubusercontent.com/SilenZcience/cmdtrix/main/img/example3.gif "example3")
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+<div id="license"></div>
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/SilenZcience/cmdtrix/blob/main/LICENSE) file for details
+
+<div id="contact"></div>
 
 ## Contact
 

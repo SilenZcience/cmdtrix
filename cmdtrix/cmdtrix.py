@@ -1,5 +1,4 @@
 from os import get_terminal_size, system, name as osname
-from sys import exit
 try:
     from colorama import init as coloramaInit
 except ImportError:

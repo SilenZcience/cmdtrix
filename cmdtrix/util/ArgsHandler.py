@@ -33,7 +33,7 @@ def store_message(default_chance, default_color):
                     error = ('second argument to "{}" requires '
                                'an integer between 0 and 100'.format(self.dest))
             if len(values) == 3:
-                if not values[2] in COLOR_CHOICES:
+                if values[2] not in COLOR_CHOICES:
                     error = ('third argument to "{}" requires '
                                'to be of the choice: '.format(self.dest))
                     error += ', '.join(COLOR_CHOICES)

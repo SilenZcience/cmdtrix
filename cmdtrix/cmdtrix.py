@@ -149,7 +149,7 @@ def updateMatrixColumns(matrixColumns: set) -> None:
     keyDetected = max(0, keyDetected-1)
 
 
-def init() -> None:
+def init() -> EventTimer:
     printCode("?25l", "2J")  # hide cursor, clear screen
     return EventTimer(10, checkTerminalSize)
 

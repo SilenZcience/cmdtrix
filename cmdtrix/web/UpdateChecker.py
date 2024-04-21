@@ -30,7 +30,7 @@ def getLastestPackageVersion(package: str) -> str:
         with urlopen(f"https://pypi.org/pypi/{package}/json", timeout=2) as _response:
             response = _response.read()
         return loadJSON(response)['info']['version']
-    except:
+    except (ValueError, OSError):
         return '0.0.0'
 
 
@@ -89,12 +89,12 @@ def printUpdateInformation(package: str, currentVersion: str):
     status = newVersionAvailable(currentVersion, latestVersion)
     if status == STATUS_UP_TO_DATE:
         return
-    message = f""
-    warning = f""
+    message = ''
+    warning = ''
     if abs(status) == STATUS_STABLE_RELEASE_AVAILABLE:
         message += f"{Fore.YELLOW}"
         message += f"A new stable release of {package} is available: v{latestVersion}\n"
-        message += f"To update, run:\n"
+        message += 'To update, run:\n'
         message += f"python -m pip install --upgrade {package}"
     elif abs(status) == STATUS_PRE_RELEASE_AVAILABLE:
         message += f"{Fore.LIGHTBLACK_EX}"
@@ -102,8 +102,8 @@ def printUpdateInformation(package: str, currentVersion: str):
     message += f"{Style.RESET_ALL}"
     if status < 0:
         warning += f"{Fore.RED}"
-        warning += f"Warning: Due to the drastic version increase, backwards compatibility is no longer guaranteed!\n"
-        warning += f"You may experience fundamental differences."
+        warning += 'Warning: Due to the drastic version increase, backwards compatibility is no longer guaranteed!\n'
+        warning += 'You may experience fundamental differences.'
         warning += f"{Style.RESET_ALL}\n"
     print(message)
     print(warning)

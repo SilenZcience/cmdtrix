@@ -1,3 +1,5 @@
+from collections import deque
+from functools import lru_cache
 from os import get_terminal_size, system, name as osname
 try:
     from colorama import init as coloramaInit
@@ -6,7 +8,6 @@ except ImportError:
 from random import choices, randrange, random
 from time import sleep as delay_frame
 from _thread import interrupt_main
-from functools import lru_cache
 
 from cmdtrix.util.EventTimer import EventTimer
 from cmdtrix.util.Chars import charList, japanese
@@ -37,6 +38,8 @@ keyDetected = 0
 
 coloramaInit()
 
+FRAME_BUFFER = []
+
 
 class MatrixColumn:
     def __init__(self, col):
@@ -45,11 +48,11 @@ class MatrixColumn:
     def reset(self, col):
         self.finished = False
         self.currentTick = 0
-        
+
         self.yPositionSet = 1
         self.yPositionErased = 1
         self.lastChar = ""
-        
+
         self.col = col
         self.speedTicks = randrange(1, MAX_SPEED_TICKS + 1)
         self.speedTickCap = (MAX_SPEED_TICKS if SYNCHRONOUS else self.speedTicks)
@@ -57,8 +60,8 @@ class MatrixColumn:
         self.lineLength = randrange(MINIMUM_LINE_LENGTH, MAXIMUM_LINE_LENGTH+1)
         self.maxYPosition = min(rows, randrange(2*rows))
 
-        self.chars = choices(charList, k=self.speedTickCap * (self.maxYPosition - 1) + self.speedTicks)
-        
+        self.chars = deque(choices(charList, k=self.speedTickCap * (self.maxYPosition - 1) + self.speedTicks))
+
         self.message_event = False
         self.message_chars = []
         self.message_color = None
@@ -80,22 +83,22 @@ class MatrixColumn:
             if self.yPositionSet <= self.maxYPosition:
                 if self.message_event and self.message_begin <= self.yPositionSet < self.message_begin + self.message_length:
                     self.lastChar = self.message_chars.pop(0)
-                    printAtPosition(self.lastChar, self.col, self.yPositionSet-1, self.message_color,  ("2;" * (random() < CHANCE_FOR_DIM)) + ("3;" * (random() < CHANCE_FOR_ITALIC)))
+                    FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, self.message_color,  ("2;" * (random() < CHANCE_FOR_DIM)) + ("3;" * (random() < CHANCE_FOR_ITALIC))))
                 else:
-                    printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR,  ("2;" * (random() < CHANCE_FOR_DIM)) + ("3;" * (random() < CHANCE_FOR_ITALIC)))
+                    FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, COLOR,  ("2;" * (random() < CHANCE_FOR_DIM)) + ("3;" * (random() < CHANCE_FOR_ITALIC))))
                 self.lastChar = self.chars.pop()
-                printAtPosition(self.lastChar , self.col, self.yPositionSet, COLOR_PEAK)
+                FRAME_BUFFER.append((self.lastChar , self.col, self.yPositionSet, COLOR_PEAK, ''))
             elif self.yPositionSet - 1 == self.maxYPosition >= rows:
-                printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR)
+                FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, COLOR, ''))
             if self.yPositionSet > self.lineLength:
-                printAtPosition(" ", self.col, self.yPositionErased, "black")
+                FRAME_BUFFER.append((' ', self.col, self.yPositionErased, "black", ''))
                 self.yPositionErased += 1
             self.finished = (self.yPositionErased > self.maxYPosition)
 
             self.yPositionSet += 1
         elif self.yPositionSet <= self.maxYPosition:
             self.lastChar = self.chars.pop()
-            printAtPosition(self.lastChar, self.col, self.yPositionSet-1, COLOR_PEAK)
+            FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, COLOR_PEAK, ''))
 
 
 @lru_cache(maxsize=min(cols*rows, 5000))
@@ -105,6 +108,15 @@ def getCode(*code: str) -> str:
 
 def printCode(*code: str) -> None:
     print(getCode(*code), end="")
+
+def flushFrameBuffer() -> None:
+    output = []
+    for text, x, y, color, style in FRAME_BUFFER:
+        output.append(getCode("m", "%d;%df" % (y, x), f"{style}{colorCodes[color]}m"))
+        output.append(text)
+
+    print(''.join(output), end='', flush=True)
+    FRAME_BUFFER.clear()
 
 
 def printAtPosition(text: str, x: int, y: int, color: str, style: str = "") -> None:
@@ -185,7 +197,7 @@ def main():
         global ON_KEY_DETECTION
         ON_KEY_DETECTION = argsHandler.onkey
         exitOnArg = False
-        
+
         eventTimer.append(init())
         timer = argsHandler.timer
         if timer != None:
@@ -193,13 +205,13 @@ def main():
         if ON_KEY_DETECTION:
             eventTimer.append(EventTimer(None, None, 'keyboardListener', on_press=on_press))
             print('', flush=True)
-        
-        
+
+
         matrixColumns = set()
         while True:
             updateMatrixColumns(matrixColumns)
+            flushFrameBuffer()
             delay_frame(FRAME_DELAY)
-            # stdout.flush()
     except KeyboardInterrupt:
         pass
     except Exception:

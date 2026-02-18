@@ -1,2 +1,1 @@
-colorama>=0.4.6
 pynput>=1.6.0

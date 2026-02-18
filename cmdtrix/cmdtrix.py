@@ -2,10 +2,6 @@ from atexit import register as atexitregister
 from collections import deque
 from functools import lru_cache
 from os import get_terminal_size, system, name as osname
-try:
-    from colorama import init as coloramaInit
-except ImportError:
-    nop = lambda *_, **__: None; coloramaInit = nop
 from random import choices, randrange, random
 from time import sleep as delay_frame
 from _thread import interrupt_main
@@ -39,8 +35,6 @@ RAINBOW = False
 
 ON_KEY_DETECTION = False
 keyDetected = 0
-
-coloramaInit()
 
 FRAME_BUFFER = []
 

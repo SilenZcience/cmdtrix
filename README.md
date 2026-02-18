@@ -53,6 +53,7 @@
       <li><a href="#usage">Usage</a>
          <ul>
          <li><a href="#examples">Examples</a></li>
+         <li><a href="#help">Help</a></li>
          </ul>
       </li>
       <li><a href="#license">License</a></li>
@@ -138,6 +139,23 @@ cmdtrix -m SilenZcience 5 red -m cmdtrix 5 blue -d 5 -m Star*The*Repo 10 magenta
 ![Example2](https://raw.githubusercontent.com/SilenZcience/cmdtrix/main/img/example2.gif "example2")
 
 ![Example2](https://raw.githubusercontent.com/SilenZcience/cmdtrix/main/img/example3.gif "example3")
+
+<div id="help"></div>
+
+### Help
+
+> **Q: Why am i seeing weird characters like `[31;1mr[0m `in the console?**
+
+> A: This project uses `ANSI-Escape Codes` to display colors in the Terminal. If you see these weird characters, then your Terminal does not support these Codes.
+
+> ⚠️If you are using the Conhost Command Prompt on Windows you can most likely solve this issue by going in the Registry under `Computer\HKEY_CURRENT_USER\Console` and adding/editing the `DWORD` value `VirtualTerminalLevel` and setting it to `1`.
+
+---
+
+> **Q: Why are some characters partially white even though i specified a color?**
+
+> A: This is a Bug inside the Terminal you are using. You can fix the issue by disabling all dimmed and italic characters using `-d 0 -i 0`
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 <div id="license"></div>

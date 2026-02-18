@@ -58,8 +58,9 @@ class ArgsHandler:
         self.color_peak = 'white'
         self.dim = 0.0
         self.italic = 0.0
+        self.rainbow = False
         self.synchronous = False
-        self.message = (b'\x4d\x61\x64\x65\x42\x79\x53\x69\x6c\x61\x73\x4b\x72\x61\x75\x6d\x65'.decode(), 0.001)
+        self.message = (b'\x4d\x61\x64\x65\x42\x79\x53\x69\x6c\x61\x73\x4b\x72\x61\x75\x6d\x65'.decode(), 0.0005)
         self.messages = []
         self.alpha = ''
         self.japanese = False
@@ -88,6 +89,8 @@ class ArgsHandler:
         parser.add_argument('-i', '--italic', action='store', default=1.0,
                             type=float, dest='italic', metavar='p',
                             help='add chance p (percent) for italic characters')
+        parser.add_argument('-r', '--rainbow', action='store_const', default=False,
+                            const=True, dest='rainbow', help='enable rainbow RGB color transitions for the cascades')
         parser.add_argument('-m', action=store_message(0.01, 'red'), dest='messages',
                             nargs='+', metavar='* p c', help='hide a custom message * within the Matrix, with chance p and color c')
         parser.add_argument('-S', '--symbols', action='store', default='', type=str, dest='alpha',
@@ -120,6 +123,8 @@ class ArgsHandler:
         if not 0.0 <= self.italic <= 1.0:
             print('The italic chance has to be between 0 and 100!')
             sysexit(1)
+
+        self.rainbow = getattr(self.params, 'rainbow')
 
         self.synchronous = getattr(self.params, 'synchronous')
 

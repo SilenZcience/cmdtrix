@@ -1,3 +1,4 @@
+from atexit import register as atexitregister
 from collections import deque
 from functools import lru_cache
 from os import get_terminal_size, system, name as osname
@@ -33,6 +34,8 @@ SYNCHRONOUS = False
 CHANCE_FOR_DIM = 0.0
 CHANCE_FOR_ITALIC = 0.0
 CHANCE_FOR_GLITCH = 0.0
+RAINBOW_HUE = 0.25
+RAINBOW = False
 
 ON_KEY_DETECTION = False
 keyDetected = 0
@@ -102,7 +105,7 @@ class MatrixColumn:
             FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, COLOR_PEAK, ''))
 
 
-@lru_cache(maxsize=min(cols*rows, 5000))
+@lru_cache(maxsize=cols*rows*64)
 def getCode(*code: str) -> str:
     return '\x1b[' + '\x1b['.join(code)
 
@@ -110,20 +113,39 @@ def getCode(*code: str) -> str:
 def printCode(*code: str) -> None:
     print(getCode(*code), end='')
 
+def hsv_to_rgb_unit(h):
+    # h in [0.0, 1.0)
+    h = h % 1.0
+    i = int(h * 6.0)
+    f = (h * 6.0) - i
+    i %= 6
+    if i == 0:
+        return 255, int(255*f), 0
+    if i == 1:
+        return 255-int(255*f), 255, 0
+    if i == 2:
+        return 0, 255, int(255*f)
+    if i == 3:
+        return 0, 255-int(255*f), 255
+    if i == 4:
+        return int(255*f), 0, 255
+    return 255, 0, 255-int(255*f)
+
+def _color_to_ansi(color, style: str) -> str:
+    style = style or '0;'
+    if isinstance(color, tuple):
+        r, g, b = color
+        return f"{style}38;2;{r};{g};{b}m"
+    return f"{style}{colorCodes[color]}m"
+
 def flushFrameBuffer() -> None:
     output = []
     for text, x, y, color, style in FRAME_BUFFER:
-        output.append(getCode('m', '%d;%df' % (y, x), f"{style}{colorCodes[color]}m"))
+        output.append(getCode('%d;%df' % (y, x), _color_to_ansi(color, style)))
         output.append(text)
 
     print(''.join(output), end='', flush=True)
     FRAME_BUFFER.clear()
-
-
-def printAtPosition(text: str, x: int, y: int, color: str, style: str = '') -> None:
-    # reset attributes, set position, set attributes and set color, concatenate with char
-    print(getCode('m', '%d;%df' % (y, x), style + colorCodes[color] + 'm'), text, sep='', end='', flush=True)
-
 
 def checkTerminalSize() -> None:
     global cols, rows
@@ -138,17 +160,23 @@ def checkTerminalSize() -> None:
         printCode('2J')  # clear screen
 
 
-def on_press(key):
+def on_press(_):
     global keyDetected
     keyDetected += 1
 
 
 def updateMatrixColumns(matrixColumns: set) -> None:
     """
-    add a new MatrixColumn every Tick, if the MAX has not been
-    reached yet
+    add a new MatrixColumn every Tick, if the MAX has not been reached yet
     """
     global keyDetected
+    if RAINBOW:
+        global RAINBOW_HUE
+        global COLOR
+        global COLOR_PEAK
+        RAINBOW_HUE = (RAINBOW_HUE + 0.0001) % 1.0
+        COLOR = hsv_to_rgb_unit(RAINBOW_HUE)
+        COLOR_PEAK = hsv_to_rgb_unit(1.0 - RAINBOW_HUE)
     for matrixColumn in matrixColumns:
         matrixColumn.update()
         if matrixColumn.finished and (not ON_KEY_DETECTION or keyDetected):
@@ -172,7 +200,12 @@ def deinit(eventTimer: list) -> None:
     for timer in eventTimer:
         timer.cancel()
 
+def __debug_():
+    with open('cmdtrix.debug.txt', 'w', encoding='utf-8') as f:
+        f.write(f"{getCode.cache_info()}\n")
+
 def main():
+    # atexitregister(__debug_)
     eventTimer = []
     exitOnArg = True
     exitStatus = 0
@@ -186,6 +219,8 @@ def main():
         CHANCE_FOR_DIM = argsHandler.dim
         global CHANCE_FOR_ITALIC
         CHANCE_FOR_ITALIC = argsHandler.italic
+        global RAINBOW
+        RAINBOW = argsHandler.rainbow
         global SYNCHRONOUS
         SYNCHRONOUS = argsHandler.synchronous
         global HIDDEN_MESSAGE

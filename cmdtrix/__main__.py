@@ -1,13 +1,13 @@
-from sys import exit
+from sys import exit as sysexit
 
 try:
     import cmdtrix.cmdtrix as cmdtrix
 except KeyboardInterrupt:
-    exit(0)
+    sysexit(0)
 except Exception as e:
-    print("an error occured while loading the module")
+    print('an error occured while loading the modul')
     # print(e)
-    exit(1)
+    sysexit(1)
 
 def entry_point():
     cmdtrix.main()

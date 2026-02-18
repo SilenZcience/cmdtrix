@@ -14,8 +14,8 @@ from cmdtrix.util.Chars import charList, japanese
 from cmdtrix.util.ArgsHandler import ArgsHandler
 
 
-colorCodes = {"black": "30", "red": "31", "green": "32", "yellow": "33",
-              "blue": "34", "magenta": "35", "cyan": "36", "white": "37"}
+colorCodes = {'black': '30', 'red': '31', 'green': '32', 'yellow': '33',
+              'blue': '34', 'magenta': '35', 'cyan': '36', 'white': '37'}
 cols, rows = get_terminal_size()
 
 FRAME_DELAY = 0.015
@@ -24,14 +24,15 @@ MINIMUM_LINE_LENGTH = 10
 MAXIMUM_LINE_LENGTH = rows
 NUMBER_OF_MATRIXCOLUMNS = cols
 MAX_SPEED_TICKS = 5
-COLOR = "green"
-COLOR_PEAK = "white"
+COLOR = 'green'
+COLOR_PEAK = 'white'
 
 HIDDEN_MESSAGE = []
 
 SYNCHRONOUS = False
 CHANCE_FOR_DIM = 0.0
 CHANCE_FOR_ITALIC = 0.0
+CHANCE_FOR_GLITCH = 0.0
 
 ON_KEY_DETECTION = False
 keyDetected = 0
@@ -51,7 +52,7 @@ class MatrixColumn:
 
         self.yPositionSet = 1
         self.yPositionErased = 1
-        self.lastChar = ""
+        self.lastChar = ''
 
         self.col = col
         self.speedTicks = randrange(1, MAX_SPEED_TICKS + 1)
@@ -83,17 +84,17 @@ class MatrixColumn:
             if self.yPositionSet <= self.maxYPosition:
                 if self.message_event and self.message_begin <= self.yPositionSet < self.message_begin + self.message_length:
                     self.lastChar = self.message_chars.pop(0)
-                    FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, self.message_color,  ("2;" * (random() < CHANCE_FOR_DIM)) + ("3;" * (random() < CHANCE_FOR_ITALIC))))
+                    FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, self.message_color,  ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
                 else:
-                    FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, COLOR,  ("2;" * (random() < CHANCE_FOR_DIM)) + ("3;" * (random() < CHANCE_FOR_ITALIC))))
+                    FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, COLOR,  ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
                 self.lastChar = self.chars.pop()
-                FRAME_BUFFER.append((self.lastChar , self.col, self.yPositionSet, COLOR_PEAK, ''))
+                FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet, COLOR_PEAK, ''))
             elif self.yPositionSet - 1 == self.maxYPosition >= rows:
-                FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, COLOR, ''))
+                FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, COLOR, ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
             if self.yPositionSet > self.lineLength:
-                FRAME_BUFFER.append((' ', self.col, self.yPositionErased, "black", ''))
+                FRAME_BUFFER.append((' ', self.col, self.yPositionErased-1, 'black', ''))
                 self.yPositionErased += 1
-            self.finished = (self.yPositionErased > self.maxYPosition)
+            self.finished = (self.yPositionErased > self.maxYPosition+1)
 
             self.yPositionSet += 1
         elif self.yPositionSet <= self.maxYPosition:
@@ -103,25 +104,25 @@ class MatrixColumn:
 
 @lru_cache(maxsize=min(cols*rows, 5000))
 def getCode(*code: str) -> str:
-    return "\x1b[" + "\x1b[".join(code)
+    return '\x1b[' + '\x1b['.join(code)
 
 
 def printCode(*code: str) -> None:
-    print(getCode(*code), end="")
+    print(getCode(*code), end='')
 
 def flushFrameBuffer() -> None:
     output = []
     for text, x, y, color, style in FRAME_BUFFER:
-        output.append(getCode("m", "%d;%df" % (y, x), f"{style}{colorCodes[color]}m"))
+        output.append(getCode('m', '%d;%df' % (y, x), f"{style}{colorCodes[color]}m"))
         output.append(text)
 
     print(''.join(output), end='', flush=True)
     FRAME_BUFFER.clear()
 
 
-def printAtPosition(text: str, x: int, y: int, color: str, style: str = "") -> None:
+def printAtPosition(text: str, x: int, y: int, color: str, style: str = '') -> None:
     # reset attributes, set position, set attributes and set color, concatenate with char
-    print(getCode("m", "%d;%df" % (y, x), style + colorCodes[color] + "m"), text, sep="", end="", flush=True)
+    print(getCode('m', '%d;%df' % (y, x), style + colorCodes[color] + 'm'), text, sep='', end='', flush=True)
 
 
 def checkTerminalSize() -> None:
@@ -134,7 +135,7 @@ def checkTerminalSize() -> None:
         MAXIMUM_LINE_LENGTH = rows
         global NUMBER_OF_MATRIXCOLUMNS
         NUMBER_OF_MATRIXCOLUMNS = cols
-        printCode("2J")  # clear screen
+        printCode('2J')  # clear screen
 
 
 def on_press(key):
@@ -162,12 +163,12 @@ def updateMatrixColumns(matrixColumns: set) -> None:
 
 
 def init() -> EventTimer:
-    printCode("?25l", "2J")  # hide cursor, clear screen
+    printCode('?25l', '2J')  # hide cursor, clear screen
     return EventTimer(10, checkTerminalSize)
 
 
 def deinit(eventTimer: list) -> None:
-    printCode("m", "2J", "?25h")  # reset attributes, clear screen, show cursor
+    printCode('m', '2J', '?25h')  # reset attributes, clear screen, show cursor
     for timer in eventTimer:
         timer.cancel()
 

@@ -29,7 +29,7 @@ HIDDEN_MESSAGE = []
 SYNCHRONOUS = False
 CHANCE_FOR_DIM = 0.0
 CHANCE_FOR_ITALIC = 0.0
-CHANCE_FOR_GLITCH = 0.0
+CHANCE_FOR_BOTTOM_UP = 0.0
 RAINBOW_HUE = 0.25
 RAINBOW = False
 
@@ -97,6 +97,67 @@ class MatrixColumn:
         elif self.yPositionSet <= self.maxYPosition:
             self.lastChar = self.chars.pop()
             FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, COLOR_PEAK, ''))
+
+
+class MatrixColumnBottomUp:
+    def __init__(self, col):
+        self.reset(col)
+
+    def reset(self, col):
+        self.finished = False
+        self.currentTick = 0
+
+        self.yPositionSet = rows
+        self.yPositionErased = rows
+        self.lastChar = ''
+
+        self.col = col
+        self.speedTicks = randrange(1, MAX_SPEED_TICKS + 1)
+        self.speedTickCap = (MAX_SPEED_TICKS if SYNCHRONOUS else self.speedTicks)
+
+        self.lineLength = randrange(MINIMUM_LINE_LENGTH, MAXIMUM_LINE_LENGTH + 1)
+        self.minYPosition = max(1, rows - randrange(2 * rows))
+
+        self.chars = deque(choices(charList, k=self.speedTickCap * (rows - self.minYPosition) + self.speedTicks))
+
+        self.message_event = False
+        self.message_chars = []
+        self.message_color = None
+        self.message_begin = 0
+        self.message_length = 0
+        for message, chance, color in HIDDEN_MESSAGE:
+            available_len = rows - self.minYPosition + 1
+            self.message_event = (available_len > len(message) + 1) and (random() < chance)
+            if self.message_event:
+                self.message_chars = list(message)
+                self.message_color = color
+                self.message_begin = randrange(self.minYPosition + len(message) - 1, rows + 1)
+                self.message_length = len(self.message_chars)
+                break
+
+    def update(self):
+        self.currentTick = (self.currentTick % self.speedTickCap + 1)
+
+        if self.currentTick == self.speedTicks:
+            if self.yPositionSet >= self.minYPosition:
+                if self.message_event and self.message_begin >= self.yPositionSet > self.message_begin - self.message_length:
+                    self.lastChar = self.message_chars.pop(0)
+                    FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet + 1, self.message_color, ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
+                else:
+                    FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet + 1, COLOR, ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
+                self.lastChar = self.chars.pop()
+                FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet, COLOR_PEAK, ''))
+            elif self.yPositionSet + 1 == self.minYPosition <= 1:
+                FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet + 1, COLOR, ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
+            if self.yPositionSet < rows - self.lineLength + 1:
+                FRAME_BUFFER.append((' ', self.col, self.yPositionErased + 1, 'black', ''))
+                self.yPositionErased -= 1
+            self.finished = (self.yPositionErased < self.minYPosition - 1)
+
+            self.yPositionSet -= 1
+        elif self.yPositionSet >= self.minYPosition:
+            self.lastChar = self.chars.pop()
+            FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet + 1, COLOR_PEAK, ''))
 
 
 @lru_cache(maxsize=cols*rows*64)
@@ -180,7 +241,7 @@ def updateMatrixColumns(matrixColumns: set) -> None:
     if len(matrixColumns) >= NUMBER_OF_MATRIXCOLUMNS or (ON_KEY_DETECTION and not keyDetected):
         return
     col = randrange(cols+1)
-    matrixColumns.add(MatrixColumn(col))
+    matrixColumns.add(MatrixColumnBottomUp(col) if random() < CHANCE_FOR_BOTTOM_UP else MatrixColumn(col))
     keyDetected = max(0, keyDetected-1)
 
 
@@ -215,6 +276,8 @@ def main():
         CHANCE_FOR_ITALIC = argsHandler.italic
         global RAINBOW
         RAINBOW = argsHandler.rainbow
+        global CHANCE_FOR_BOTTOM_UP
+        CHANCE_FOR_BOTTOM_UP = argsHandler.bottomup
         global SYNCHRONOUS
         SYNCHRONOUS = argsHandler.synchronous
         global HIDDEN_MESSAGE

@@ -59,6 +59,7 @@ class ArgsHandler:
         self.dim = 0.0
         self.italic = 0.0
         self.rainbow = False
+        self.bottomup = 0.0
         self.synchronous = False
         self.message = (b'\x4d\x61\x64\x65\x42\x79\x53\x69\x6c\x61\x73\x4b\x72\x61\x75\x6d\x65'.decode(), 0.0005)
         self.messages = []
@@ -75,28 +76,31 @@ class ArgsHandler:
         parser = argparse.ArgumentParser()
         parser.add_argument('-v', '--version', action='store_const', default=False,
                             const=True, dest='version', help="show program's version number and exit")
-        parser.add_argument('-s', '--synchronous', action='store_const', default=False,
-                            const=True, dest='synchronous', help='sync the matrix columns speed')
         parser.add_argument('-c', '--color', action='store', default='green',
                             choices=COLOR_CHOICES,
                             dest='color', metavar='[*]', help='set the main-color to *')
         parser.add_argument('-p', '--peak', action='store', default='white',
                             choices=COLOR_CHOICES,
                             dest='peak', metavar='[*]', help='set the peak-color to *')
+        parser.add_argument('-r', '--rainbow', action='store_const', default=False,
+                            const=True, dest='rainbow', help='enable rainbow color transitions')
         parser.add_argument('-d', '--dim', action='store', default=1.0,
                             type=float, dest='dim', metavar='p',
                             help='add chance p (percent) for dim characters')
         parser.add_argument('-i', '--italic', action='store', default=1.0,
                             type=float, dest='italic', metavar='p',
                             help='add chance p (percent) for italic characters')
-        parser.add_argument('-r', '--rainbow', action='store_const', default=False,
-                            const=True, dest='rainbow', help='enable rainbow color transitions')
+        parser.add_argument('-b', '--bottomup', action='store', default=0.0,
+                            type=float, dest='bottomup', metavar='p',
+                            help='add chance p (percent) for bottom-up cascades')
         parser.add_argument('-m', action=store_message(0.01, 'red'), dest='messages',
                             nargs='+', metavar='* p c', help='hide a custom message * within the Matrix, with chance p and color c')
         parser.add_argument('-S', '--symbols', action='store', default='', type=str, dest='alpha',
                             metavar='*', help='set a custom series of symbols to choose from')
         parser.add_argument('-j', '--japanese', action='store_const', default=False, const=True,
                             dest='japanese', help='use japanese characters (overrides -S; requires appropriate fonts)')
+        parser.add_argument('-s', '--synchronous', action='store_const', default=False,
+                            const=True, dest='synchronous', help='sync the matrix columns speed')
         parser.add_argument('--framedelay', action='store', default=0.015, type=float,
                             dest='framedelay', metavar='DELAY', help='set the framedelay (in sec) to slow down the Matrix, default is 0.015')
         parser.add_argument('--timer', action='store', default=None, type=float,
@@ -125,6 +129,11 @@ class ArgsHandler:
             sysexit(1)
 
         self.rainbow = getattr(self.params, 'rainbow')
+
+        self.bottomup = getattr(self.params, 'bottomup') / 100
+        if not 0.0 <= self.bottomup <= 1.0:
+            print('The bottom-up chance has to be between 0 and 100!')
+            sysexit(1)
 
         self.synchronous = getattr(self.params, 'synchronous')
 

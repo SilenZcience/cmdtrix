@@ -112,15 +112,16 @@ python -m cmdtrix [-h] [-c COLOR] ...
 |------------------------|----------------------------------------------------------------------|
 | -h, --help             | show help message and exit                                           |
 | -v, --version          | output version information                                           |
-| -s, --synchronous      | sync the matrix columns speed                                        |
 | -c [\*], --color [\*]  | set the main-color to *                                              |
 | -p [\*], --peak [\*]   | set the peak-color to *                                              |
+| -r, --rainbow          | enable rainbow color transitions                                     |
 | -d p, --dim p          | add chance p (percent) for dim characters                            |
 | -i p, --italic p       | add chance p (percent) for italic characters                         |
-| -r, --rainbow          | enable rainbow color transitions                                     |
+| -b, --bottomup p       | add chance p (percent) for bottom-up cascades                        |
 | -m * p c               | hide a custom message * within the Matrix, with chance p and color c |
 | -S \*, --symbols \*    | set a custom series of symbols to choose from                        |
 | -j, --japanese         | use japanese characters (overrides -S; requires appropriate fonts)   |
+| -s, --synchronous      | sync the matrix columns speed                                        |
 | --framedelay DELAY     | set the framedelay (in sec) to slow down the Matrix, default is 0.015|
 | --timer DELAY          | exit the Matrix after DELAY (in sec) automatically                   |
 | --onkey                | only spawn columns on key-press                                      |

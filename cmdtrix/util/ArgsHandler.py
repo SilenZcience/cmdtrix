@@ -90,7 +90,7 @@ class ArgsHandler:
                             type=float, dest='italic', metavar='p',
                             help='add chance p (percent) for italic characters')
         parser.add_argument('-r', '--rainbow', action='store_const', default=False,
-                            const=True, dest='rainbow', help='enable rainbow RGB color transitions for the cascades')
+                            const=True, dest='rainbow', help='enable rainbow color transitions')
         parser.add_argument('-m', action=store_message(0.01, 'red'), dest='messages',
                             nargs='+', metavar='* p c', help='hide a custom message * within the Matrix, with chance p and color c')
         parser.add_argument('-S', '--symbols', action='store', default='', type=str, dest='alpha',

@@ -116,6 +116,7 @@ python -m cmdtrix [-h] [-c COLOR] ...
 | -p [\*], --peak [\*]   | set the peak-color to *                                              |
 | -d p, --dim p          | add chance p (percent) for dim characters                            |
 | -i p, --italic p       | add chance p (percent) for italic characters                         |
+| -r, --rainbow          | enable rainbow color transitions                                     |
 | -m * p c               | hide a custom message * within the Matrix, with chance p and color c |
 | -S \*, --symbols \*    | set a custom series of symbols to choose from                        |
 | -j, --japanese         | use japanese characters (overrides -S; requires appropriate fonts)   |

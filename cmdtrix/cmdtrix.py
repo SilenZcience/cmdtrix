@@ -129,7 +129,7 @@ class MatrixColumnBottomUp:
             available_len = rows - self.minYPosition + 1
             self.message_event = (available_len > len(message) + 1) and (random() < chance)
             if self.message_event:
-                self.message_chars = list(message[::-1])
+                self.message_chars = list(reversed(message))
                 self.message_color = color
                 self.message_begin = randrange(self.minYPosition + len(message) - 1, rows)
                 self.message_length = len(self.message_chars)

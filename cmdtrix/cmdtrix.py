@@ -61,14 +61,10 @@ class MatrixColumn:
         self.chars = deque(choices(charList, k=self.speedTickCap * (self.maxYPosition - 1) + self.speedTicks))
 
         self.message_event = False
-        self.message_chars = []
-        self.message_color = None
-        self.message_begin = 0
-        self.message_length = 0
         for message, chance, color in HIDDEN_MESSAGE:
             self.message_event = (self.maxYPosition > len(message) + 1) and (random() < chance)
             if self.message_event:
-                self.message_chars = list(message)
+                self.message_chars = deque(message)
                 self.message_color = color
                 self.message_begin = randrange(1, self.maxYPosition - len(message)+2)
                 self.message_length = len(self.message_chars)
@@ -80,7 +76,7 @@ class MatrixColumn:
         if self.currentTick == self.speedTicks:
             if self.yPositionSet <= self.maxYPosition:
                 if self.message_event and self.message_begin <= self.yPositionSet < self.message_begin + self.message_length:
-                    self.lastChar = self.message_chars.pop(0)
+                    self.lastChar = self.message_chars.popleft()
                     FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, self.message_color,  ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
                 else:
                     FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, COLOR,  ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
@@ -121,15 +117,11 @@ class MatrixColumnBottomUp:
         self.chars = deque(choices(charList, k=self.speedTickCap * (rows - self.minYPosition) + self.speedTicks))
 
         self.message_event = False
-        self.message_chars = []
-        self.message_color = None
-        self.message_begin = 0
-        self.message_length = 0
         for message, chance, color in HIDDEN_MESSAGE:
             available_len = rows - self.minYPosition + 1
             self.message_event = (available_len > len(message) + 1) and (random() < chance)
             if self.message_event:
-                self.message_chars = list(reversed(message))
+                self.message_chars = deque(reversed(message))
                 self.message_color = color
                 self.message_begin = randrange(self.minYPosition + len(message) - 1, rows)
                 self.message_length = len(self.message_chars)
@@ -141,7 +133,7 @@ class MatrixColumnBottomUp:
         if self.currentTick == self.speedTicks:
             if self.yPositionSet >= self.minYPosition:
                 if self.message_event and self.message_begin >= self.yPositionSet > self.message_begin - self.message_length:
-                    self.lastChar = self.message_chars.pop(0)
+                    self.lastChar = self.message_chars.popleft()
                     FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet + 1, self.message_color, ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
                 else:
                     FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet + 1, COLOR, ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
@@ -312,8 +304,8 @@ def main():
     finally:
         if not exitOnArg:
             deinit(eventTimer)
-    exit(exitStatus)
+    return exitStatus
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

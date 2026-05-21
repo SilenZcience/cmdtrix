@@ -1,7 +1,7 @@
-from atexit import register as atexitregister
+# from atexit import register as atexitregister
 from collections import deque
 from functools import lru_cache
-from os import get_terminal_size, system, name as osname
+from os import get_terminal_size
 from random import choices, randrange, random
 from time import sleep as delay_frame
 from _thread import interrupt_main
@@ -246,12 +246,12 @@ def updateMatrixColumns(matrixColumns: set) -> None:
 
 
 def init() -> EventTimer:
-    printCode('?25l', '2J')  # hide cursor, clear screen
-    return EventTimer(10, checkTerminalSize)
+    printCode('?1049h', '?25l', '2J')  # enter alternate screen, hide cursor, clear screen
+    return EventTimer(8, checkTerminalSize)
 
 
 def deinit(eventTimer: list) -> None:
-    printCode('m', '2J', '?25h')  # reset attributes, clear screen, show cursor
+    printCode('m', '2J', '?25h', '?1049l')  # reset attributes, clear screen, show cursor, leave alternate screen
     for timer in eventTimer:
         timer.cancel()
 
@@ -312,7 +312,6 @@ def main():
     finally:
         if not exitOnArg:
             deinit(eventTimer)
-            system('cls' if osname == 'nt' else 'clear')
     exit(exitStatus)
 
 

@@ -19,14 +19,13 @@ void sigint_handler(int signum) {
 }
 
 void init() {
-    fprintf(stdout, "\x1b[?25l\x1b[2J"); //hide cursor, clear screen
+    fprintf(stdout, "\x1b[?1049h\x1b[?25l\x1b[2J"); //enter alternate screen, hide cursor, clear screen
     fflush(stdout);
 }
 
 void deinit() {
-    fprintf(stdout, "\x1b[m\x1b[2J\x1b[?25h"); //reset attributes, clear screen, show cursor
+    fprintf(stdout, "\x1b[m\x1b[2J\x1b[?25h\x1b[?1049l"); //reset attributes, clear screen, show cursor, leave alternate screen
     fflush(stdout);
-    system("clear");
 }
 
 void printAtPosition(wchar_t s, int x, int y, int color) {

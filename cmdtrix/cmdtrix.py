@@ -121,7 +121,7 @@ class MatrixColumnBottomUp:
             available_len = rows - self.minYPosition + 1
             self.message_event = (available_len > len(message) + 1) and (random() < chance)
             if self.message_event:
-                self.message_chars = deque(reversed(message))
+                self.message_chars = deque(message)
                 self.message_color = color
                 self.message_begin = randrange(self.minYPosition + len(message) - 1, rows)
                 self.message_length = len(self.message_chars)
@@ -133,7 +133,7 @@ class MatrixColumnBottomUp:
         if self.currentTick == self.speedTicks:
             if self.yPositionSet >= self.minYPosition:
                 if self.message_event and self.message_begin >= self.yPositionSet > self.message_begin - self.message_length:
-                    self.lastChar = self.message_chars.popleft()
+                    self.lastChar = self.message_chars.pop()
                     FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet + 1, self.message_color, ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
                 else:
                     FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet + 1, COLOR, ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))

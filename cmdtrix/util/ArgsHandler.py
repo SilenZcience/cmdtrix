@@ -6,7 +6,10 @@ from cmdtrix import __version__, __sysversion__, __author__
 from cmdtrix.web.UpdateChecker import printUpdateInformation
 
 
-COLOR_CHOICES = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
+COLOR_CHOICES = [
+    'black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white',
+    'orange', 'pink',
+]
 
 
 def store_message(default_chance, default_color):

@@ -178,11 +178,16 @@ def hsv_to_rgb_unit(h):
         return int(255*f), 0, 255
     return 255, 0, 255-int(255*f)
 
+@lru_cache(maxsize=64) # 4 styles * 9 colors
 def _color_to_ansi(color, style: str) -> str:
     style = style or '0;'
     if isinstance(color, tuple):
         r, g, b = color
         return f"{style}38;2;{r};{g};{b}m"
+    if color == 'orange':
+        return f"{style}38;2;255;165;0m"
+    if color == 'pink':
+        return f"{style}38;2;255;71;156m"
     return f"{style}{colorCodes[color]}m"
 
 def flushFrameBuffer() -> None:

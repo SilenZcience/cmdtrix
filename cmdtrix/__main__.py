@@ -5,7 +5,7 @@ try:
 except KeyboardInterrupt:
     sysexit(0)
 except Exception as e:
-    print('an error occured while loading the modul')
+    print('an error occured while loading the module')
     # print(e)
     sysexit(1)
 

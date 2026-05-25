@@ -2,7 +2,7 @@ from threading import Timer
 from pynput import keyboard
 
 class RepeatedTimer(object):
-    def __init__(self, interval, function, *args, **kwargs):
+    def __init__(self, interval: int, function, *args, **kwargs) -> None:
         self._timer = None
         self.interval = interval
         self.function = function
@@ -10,33 +10,33 @@ class RepeatedTimer(object):
         self.kwargs = kwargs
         self.is_running = False
 
-    def _run(self):
+    def _run(self) -> None:
         self.is_running = False
         self.start()
         self.function(*self.args, **self.kwargs)
 
-    def start(self):
+    def start(self) -> None:
         if not self.is_running:
             self._timer = Timer(self.interval, self._run)
             self._timer.start()
             self.is_running = True
 
-    def cancel(self):
+    def cancel(self) -> None:
         self._timer.cancel()
         self.is_running = False
 
 class KeyboardListener():
-    def __init__(self, on_press=None, on_release=None, *args, **kwargs):
+    def __init__(self, on_press=None, on_release=None, *args, **kwargs) -> None:
         self.listener = keyboard.Listener(on_press=on_press, on_release=on_release)
 
-    def start(self):
+    def start(self) -> None:
         self.listener.start()
 
-    def cancel(self):
+    def cancel(self) -> None:
         self.listener.stop()
 
 class EventTimer(object):
-    def __init__(self, interval, function, type_='repeatingTimer', *args, **kwargs):
+    def __init__(self, interval: int, function, type_: str='repeatingTimer', *args, **kwargs) -> None:
         options = ['repeatingTimer', 'Timer', 'keyboardListener']
         if type_ == options[0]:
             self.thread = RepeatedTimer(interval, function, *args, **kwargs)
@@ -48,8 +48,8 @@ class EventTimer(object):
             raise ValueError('Allowed are only the following options: ' + ','.join(options))
         self.thread.start()
 
-    def start(self):
+    def start(self) -> None:
         self.thread.start()
 
-    def cancel(self):
+    def cancel(self) -> None:
         self.thread.cancel()

@@ -81,7 +81,7 @@ def newVersionAvailable(currentVersion: str, latestVersion: str) -> int:
     return status
 
 
-def printUpdateInformation(package: str, currentVersion: str):
+def printUpdateInformation(package: str, currentVersion: str) -> None:
     latestVersion = getLastestPackageVersion(package)
     status = newVersionAvailable(currentVersion, latestVersion)
     if status == STATUS_UP_TO_DATE:

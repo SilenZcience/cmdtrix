@@ -40,10 +40,10 @@ FRAME_BUFFER = []
 
 
 class MatrixColumn:
-    def __init__(self, col):
+    def __init__(self, col) -> None:
         self.reset(col)
 
-    def reset(self, col):
+    def reset(self, col) -> None:
         self.finished = False
         self.currentTick = 0
 
@@ -70,7 +70,7 @@ class MatrixColumn:
                 self.message_length = len(self.message_chars)
                 break
 
-    def update(self):
+    def update(self) -> None:
         self.currentTick = (self.currentTick % self.speedTickCap + 1)
 
         if self.currentTick == self.speedTicks:
@@ -96,10 +96,10 @@ class MatrixColumn:
 
 
 class MatrixColumnBottomUp:
-    def __init__(self, col):
+    def __init__(self, col) -> None:
         self.reset(col)
 
-    def reset(self, col):
+    def reset(self, col) -> None:
         self.finished = False
         self.currentTick = 0
 
@@ -127,7 +127,7 @@ class MatrixColumnBottomUp:
                 self.message_length = len(self.message_chars)
                 break
 
-    def update(self):
+    def update(self) -> None:
         self.currentTick = (self.currentTick % self.speedTickCap + 1)
 
         if self.currentTick == self.speedTicks:
@@ -160,7 +160,7 @@ def getCode(*code: str) -> str:
 def printCode(*code: str) -> None:
     print(getCode(*code), end='')
 
-def hsv_to_rgb_unit(h):
+def hsv_to_rgb_unit(h: float) -> tuple:
     # h in [0.0, 1.0)
     h = h % 1.0
     i = int(h * 6.0)
@@ -212,7 +212,7 @@ def checkTerminalSize() -> None:
         printCode('2J')  # clear screen
 
 
-def on_press(_):
+def on_press(_) -> None:
     global keyDetected
     keyDetected += 1
 
@@ -252,11 +252,11 @@ def deinit(eventTimer: list) -> None:
     for timer in eventTimer:
         timer.cancel()
 
-def __debug_():
+def __debug_() -> None:
     with open('cmdtrix.debug.txt', 'w', encoding='utf-8') as f:
         f.write(f"{getCode.cache_info()}\n")
 
-def main():
+def main() -> int:
     # atexitregister(__debug_)
     eventTimer = []
     exitOnArg = True

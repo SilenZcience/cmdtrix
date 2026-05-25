@@ -9,7 +9,7 @@ except Exception as e:
     # print(e)
     sysexit(1)
 
-def entry_point():
+def entry_point() -> None:
     cmdtrix.main()
 
 if __name__ == '__main__':

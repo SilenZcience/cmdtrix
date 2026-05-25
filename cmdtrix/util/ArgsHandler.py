@@ -12,7 +12,7 @@ COLOR_CHOICES = [
 ]
 
 
-def store_message(default_chance, default_color):
+def store_message(default_chance: float, default_color: str):
     """Action for argparse that allows a mandatory and optional
     argument, a string and integer, with a default for the integer.
 
@@ -21,7 +21,7 @@ def store_message(default_chance, default_color):
     """
     class StringInteger(argparse.Action):
         """Action to assign a string and optional integer"""
-        def __call__(self, parser, namespace, values, option_string=None):
+        def __call__(self, parser, namespace, values: list, option_string=None):
             error = ''
             message, chance, color = '', default_chance, default_color
             if len(values) not in [1, 2, 3]:
@@ -51,7 +51,7 @@ def store_message(default_chance, default_color):
 
 
 class ArgsHandler:
-    def __init__(self, file):
+    def __init__(self, file: str) -> None:
         self.file = file
         self.workingDir = path.dirname(path.realpath(self.file))
 
@@ -75,7 +75,7 @@ class ArgsHandler:
         self.parseArgs()
         self.translateArgs()
 
-    def parseArgs(self):
+    def parseArgs(self) -> None:
         parser = argparse.ArgumentParser()
         parser.add_argument('-v', '--version', action='store_const', default=False,
                             const=True, dest='version', help="show program's version number and exit")
@@ -113,7 +113,7 @@ class ArgsHandler:
 
         self.params = parser.parse_args()
 
-    def translateArgs(self):
+    def translateArgs(self) -> None:
         if getattr(self.params, 'version'):
             self._showVersion()
             sysexit(0)
@@ -157,7 +157,7 @@ class ArgsHandler:
 
         self.onkey = getattr(self.params, 'onkey')
 
-    def _showVersion(self):
+    def _showVersion(self) -> None:
         print()
         print('------------------------------------------------------------')
         print(f"cmdtrix {__version__} - from {self.workingDir}")

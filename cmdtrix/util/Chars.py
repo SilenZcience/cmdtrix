@@ -1,5 +1,5 @@
 
-def genCharList(unicode_start, unicode_end):
+def genCharList(unicode_start: int, unicode_end: int) -> list:
     return [chr(i) for i in range(unicode_start, unicode_end)]
 
 

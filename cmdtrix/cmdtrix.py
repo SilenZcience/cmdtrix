@@ -77,7 +77,7 @@ class MatrixColumn:
             if self.yPositionSet <= self.maxYPosition:
                 if self.message_event and self.message_begin <= self.yPositionSet < self.message_begin + self.message_length:
                     self.lastChar = self.message_chars.popleft()
-                    FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, self.message_color,  ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
+                    FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, self.message_color or COLOR,  ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
                 else:
                     FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet-1, COLOR,  ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
                 self.lastChar = self.chars.pop()
@@ -134,7 +134,7 @@ class MatrixColumnBottomUp:
             if self.yPositionSet >= self.minYPosition:
                 if self.message_event and self.message_begin >= self.yPositionSet > self.message_begin - self.message_length:
                     self.lastChar = self.message_chars.pop()
-                    FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet + 1, self.message_color, ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
+                    FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet + 1, self.message_color or COLOR, ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
                 else:
                     FRAME_BUFFER.append((self.lastChar, self.col, self.yPositionSet + 1, COLOR, ('2;' * (random() < CHANCE_FOR_DIM)) + ('3;' * (random() < CHANCE_FOR_ITALIC))))
                 self.lastChar = self.chars.pop()

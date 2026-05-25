@@ -12,7 +12,7 @@ COLOR_CHOICES = [
 ]
 
 
-def store_message(default_chance: float, default_color: str):
+def store_message(default_chance: float = 0.01, default_color: str = None):
     """Action for argparse that allows a mandatory and optional
     argument, a string and integer, with a default for the integer.
 
@@ -96,7 +96,7 @@ class ArgsHandler:
         parser.add_argument('-b', '--bottomup', action='store', default=0.0,
                             type=float, dest='bottomup', metavar='p',
                             help='add chance p (percent) for bottom-up cascades')
-        parser.add_argument('-m', action=store_message(0.01, 'red'), dest='messages',
+        parser.add_argument('-m', action=store_message(), dest='messages',
                             nargs='+', metavar='* p c', help='hide a custom message * within the Matrix, with chance p and color c')
         parser.add_argument('-S', '--symbols', action='store', default='', type=str, dest='alpha',
                             metavar='*', help='set a custom series of symbols to choose from')
@@ -140,7 +140,7 @@ class ArgsHandler:
 
         self.synchronous = getattr(self.params, 'synchronous')
 
-        self.messages = [(self.message[0], self.message[1], self.color)]
+        self.messages = [(self.message[0], self.message[1], None)]
         if getattr(self.params, 'messages'):
             self.messages += getattr(self.params, 'messages')
 

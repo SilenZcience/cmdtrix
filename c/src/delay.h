@@ -2,5 +2,6 @@
 #define DELAY_H_
 
 int msleep(long msec);
+int dsleep(double sec);
 
 #endif

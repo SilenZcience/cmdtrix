@@ -6,7 +6,6 @@
 
 const int initial_capacity = 11;
 
-
 int _resize(ArrayList* l, int new_capacity);
 
 void al_init(ArrayList* l) {
@@ -26,7 +25,6 @@ int al_append(ArrayList* l, Cascade* cascade) {
             return 0;
         }
     }
-
     l->arr[l->size++] = cascade;
     return 1;
 }
@@ -38,24 +36,19 @@ int al_insert(ArrayList* l, int pos, Cascade* cascade) {
             return 0;
         }
     }
-
     for (int i = l->size; i > pos; --i) {
         l->arr[i] = l->arr[i - 1];
     }
     l->arr[pos] = cascade;
     ++l->size;
-
     return 1;
 }
 
 void al_delete(ArrayList* l, int pos) {
-    fprintf(stderr, "TODO: MEM LEAK at al_delete\n");
     for (int i = pos; i < l->size; ++i) {
         l->arr[i] = l->arr[i + 1];
     }
-
     --l->size;
-
     if (3 * l->size < l->capacity) {
         _resize(l, 0.5 * l->capacity);
     }
@@ -65,14 +58,12 @@ int _resize(ArrayList* l, int new_capacity) {
     if (new_capacity < 11) {
         return 1;
     }
-
     Cascade** new_mem = realloc(l->arr, sizeof(Cascade*) * new_capacity);
     if (new_mem) {
         l->capacity = new_capacity;
         l->arr = new_mem;
         return 1;
-    }
-    else {
+    } else {
         fprintf(stderr, "Not enough memory at _resize.\n");
         return 0;
     }
